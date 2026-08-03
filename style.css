@@ -376,6 +376,12 @@ section {
 	margin-top: 3.5rem;
 }
 
+.about-image {
+	width: 100%;
+	aspect-ratio: 4/5;
+	object-fit: cover;
+}
+
 .about-image-block {
 	position: relative;
 }
@@ -417,17 +423,26 @@ section {
 	font-weight: 300;
 }
 
+.about-body p strong {
+	font-weight: 600;
+}
+
 .about-body p:first-of-type {
 	font-size: 1.15rem;
 	font-family: "Cormorant Garamond", serif;
-	font-weight: 400;
+	font-weight: 500;
 	color: var(--navy);
 	line-height: 1.65;
 }
 
+.pillar-border {
+	border: 0.1px solid var(--border);
+	margin-bottom: 1rem;
+}
+
 .about-pillars {
-	margin-top: 2.5rem;
-	border-top: 1px solid var(--border);
+	/* margin-top: 2.5rem; */
+	/* border-top: 1px solid var(--border); */
 	padding-top: 2rem;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -438,6 +453,13 @@ section {
 	display: flex;
 	flex-direction: column;
 	gap: 0.3rem;
+}
+
+.pillar-intro {
+	font-size: 1rem;
+	color: var(--text-mid);
+	font-weight: 400;
+	text-align: center;
 }
 
 .pillar-label {
@@ -478,16 +500,23 @@ section {
 }
 
 .programs-grid {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
+	display: flex;
+	flex-direction: column;
 	gap: 1.5px;
 	background: rgba(201, 168, 76, 0.15);
 }
 
+.program-anchor {
+	color: inherit;
+	text-decoration: none;
+}
+
 .program-card {
 	background: var(--navy);
-	padding: 2.5rem;
-	position: relative;
+	padding: 2rem 2.5rem;
+	display: flex;
+	align-items: center;
+	gap: 2.5rem;
 	transition: background 0.3s;
 }
 
@@ -495,22 +524,49 @@ section {
 	background: var(--navy-mid);
 }
 
-.program-num {
+.program-date {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.3rem;
+	flex: 0 0 auto;
+	width: 110px;
+}
+
+.program-date-label {
+	font-size: 0.62rem;
+	font-weight: 500;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: rgba(201, 168, 76, 0.55);
+}
+
+.program-date-value {
 	font-family: "Cormorant Garamond", serif;
-	font-size: 3.5rem;
-	font-weight: 300;
-	color: rgba(201, 168, 76, 0.15);
-	line-height: 1;
-	margin-bottom: 1rem;
-	display: block;
+	font-size: 1.7rem;
+	font-weight: 500;
+	color: var(--gold-light);
+	line-height: 1.15;
+}
+
+.program-card-body {
+	flex: 1 1 320px;
+	min-width: 0;
+}
+
+.program-card-heading {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 0.6rem;
 }
 
 .program-title {
 	font-family: "Cormorant Garamond", serif;
-	font-size: 1.4rem;
+	font-size: 1.6rem;
 	font-weight: 500;
 	color: var(--white);
-	margin-bottom: 1rem;
 	line-height: 1.3;
 }
 
@@ -519,37 +575,32 @@ section {
 	color: rgba(255, 255, 255, 0.5);
 	line-height: 1.7;
 	font-weight: 300;
-	margin-bottom: 1.5rem;
 }
 
-.program-bullets {
-	list-style: none;
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-}
-
-.program-bullets li {
-	font-size: 0.82rem;
-	color: rgba(255, 255, 255, 0.45);
-	display: flex;
-	gap: 0.6rem;
-	align-items: flex-start;
-	font-weight: 300;
-}
-
-.program-bullets li::before {
-	content: "—";
+.program-more {
+	flex: 0 0 auto;
+	display: inline-block;
+	font-size: 0.75rem;
+	font-weight: 500;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
 	color: var(--gold);
-	flex-shrink: 0;
-	margin-top: 0.05em;
+	text-decoration: none;
+	border-bottom: 1px solid var(--gold);
+	padding-bottom: 0.15rem;
+	white-space: nowrap;
+	transition:
+		color 0.2s,
+		border-color 0.2s;
+}
+
+.program-more:hover {
+	color: var(--gold-light);
+	border-color: var(--gold-light);
 }
 
 .program-tag {
-	position: absolute;
-	top: 1.5rem;
-	right: 1.5rem;
-	font-size: 0.65rem;
+	font-size: 0.7rem;
 	font-weight: 500;
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
@@ -557,6 +608,7 @@ section {
 	border: 1px solid rgba(201, 168, 76, 0.3);
 	padding: 0.25rem 0.65rem;
 	border-radius: 2px;
+	white-space: nowrap;
 }
 
 .program-tag.future {
@@ -862,8 +914,14 @@ section {
 	margin-bottom: 3.5rem;
 }
 
+.team-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+	gap: 2rem;
+	margin-top: 2rem;
+}
+
 .team-card {
-	max-width: 480px;
 	display: grid;
 	grid-template-columns: auto 1fr;
 	gap: 2.5rem;
@@ -1115,8 +1173,16 @@ footer {
 	.involved-grid {
 		grid-template-columns: 1fr;
 	}
-	.programs-grid {
-		grid-template-columns: 1fr;
+	.program-card {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1rem;
+	}
+	.program-date {
+		flex-direction: row;
+		align-items: baseline;
+		gap: 0.5rem;
+		width: auto;
 	}
 	.faq-grid {
 		grid-template-columns: 1fr;
