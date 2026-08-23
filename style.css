@@ -1090,6 +1090,49 @@ section {
 	position: relative;
 }
 
+/* ─────────── DISCORD WIDGET ─────────── */
+.discord-widget-grid {
+	display: grid;
+	grid-template-columns: 1fr 350px;
+	gap: 3rem;
+	align-items: center;
+	margin-top: 3.5rem;
+}
+
+.discord-widget-copy {
+	max-width: 480px;
+}
+
+.discord-widget-title {
+	font-family: "Cormorant Garamond", serif;
+	font-size: 1.8rem;
+	font-weight: 500;
+	color: var(--navy);
+	margin-bottom: 0.75rem;
+}
+
+.discord-widget-desc {
+	font-size: 0.92rem;
+	color: var(--text-mid);
+	font-weight: 300;
+	line-height: 1.7;
+}
+
+.discord-widget-frame {
+	width: 100%;
+	max-width: 350px;
+	justify-self: center;
+	border: 1px solid var(--border);
+	background: var(--navy);
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.discord-widget-frame iframe {
+	display: block;
+	width: 100%;
+}
+
 .involved-icon {
 	width: 36px;
 	height: 36px;
@@ -1410,9 +1453,13 @@ footer {
 @media (max-width: 900px) {
 	.about-grid,
 	#mission .about-grid,
-	#kickoff-overview .about-grid {
+	#kickoff-overview .about-grid,
+	.discord-widget-grid {
 		grid-template-columns: 1fr;
 		gap: 3rem;
+	}
+	.discord-widget-frame {
+		justify-self: stretch;
 	}
 	.involved-grid {
 		grid-template-columns: 1fr;
