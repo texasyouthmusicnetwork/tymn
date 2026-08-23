@@ -24,10 +24,21 @@
 	--border-gold: rgba(201, 168, 76, 0.35);
 	--rank-up: #3f8f5f;
 	--rank-down: #b2452f;
+	--font-score: "Oswald", "DM Sans", sans-serif;
 }
 
 html {
 	scroll-behavior: smooth;
+}
+
+/* Inline text links inside prose (not buttons, which have their own classes) */
+p a {
+	color: var(--gold);
+	text-decoration-color: var(--border-gold);
+}
+
+p a:hover {
+	color: var(--gold-light);
 }
 
 body {
@@ -115,6 +126,54 @@ nav {
 .nav-cta:hover {
 	background: var(--gold) !important;
 	color: var(--navy) !important;
+}
+
+.nav-dropdown {
+	position: relative;
+}
+
+.nav-dropdown-menu {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	margin-top: 0.65rem;
+	min-width: 200px;
+	list-style: none;
+	background: var(--navy);
+	border: 1px solid rgba(201, 168, 76, 0.25);
+	padding: 0.4rem 0;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(-6px);
+	transition:
+		opacity 0.18s,
+		transform 0.18s,
+		visibility 0.18s;
+	z-index: 200;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0);
+}
+
+.nav-dropdown-menu a {
+	display: block;
+	padding: 0.65rem 1.15rem;
+	font-size: 0.76rem !important;
+	font-weight: 400;
+	letter-spacing: 0.06em !important;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.75);
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.nav-dropdown-menu a:hover {
+	color: var(--gold-light);
+	background: rgba(201, 168, 76, 0.08);
 }
 
 /* ─── PAGE HEADER (non-Home pages) ─── */
@@ -947,10 +1006,11 @@ section {
 }
 
 .stat-value {
-	font-family: "Cormorant Garamond", serif;
+	font-family: var(--font-score);
 	font-size: 1.6rem;
-	font-weight: 500;
+	font-weight: 600;
 	color: var(--navy);
+	font-variant-numeric: tabular-nums;
 }
 
 .stat-desc {
@@ -1545,12 +1605,6 @@ footer {
 
 
 /* ─── LEADERBOARD ─── */
-.center-intro {
-	margin-left: auto;
-	margin-right: auto;
-	text-align: center;
-}
-
 .leaderboard-demo-banner {
 	margin-top: 2rem;
 	margin-bottom: 2.5rem;
@@ -1611,17 +1665,20 @@ footer {
 }
 
 .rank-num {
-	font-family: "Cormorant Garamond", serif;
+	font-family: var(--font-score);
 	font-size: 1.5rem;
-	font-weight: 500;
+	font-weight: 600;
 	color: var(--navy);
 	line-height: 1;
+	font-variant-numeric: tabular-nums;
 }
 
 .rank-change {
-	font-size: 0.7rem;
+	font-family: var(--font-score);
+	font-size: 0.72rem;
 	font-weight: 600;
 	white-space: nowrap;
+	letter-spacing: 0.02em;
 }
 
 .rank-change.up {
@@ -1687,11 +1744,13 @@ footer {
 }
 
 .rp-value {
-	font-family: "Cormorant Garamond", serif;
-	font-size: 1.25rem;
-	font-weight: 500;
+	font-family: var(--font-score);
+	font-size: 1.2rem;
+	font-weight: 600;
 	color: var(--gold);
 	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+	letter-spacing: 0.01em;
 }
 
 .rp-unit {
@@ -1705,9 +1764,11 @@ footer {
 }
 
 .rp-change {
-	font-size: 0.72rem;
-	font-weight: 500;
+	font-family: var(--font-score);
+	font-size: 0.74rem;
+	font-weight: 600;
 	white-space: nowrap;
+	letter-spacing: 0.01em;
 }
 
 .rp-change.up {
@@ -1721,11 +1782,6 @@ footer {
 .rp-change.same,
 .rp-change.new {
 	color: var(--text-light);
-}
-
-.leaderboard-cta {
-	text-align: center;
-	margin-top: 2.5rem;
 }
 
 #leaderboard-summary {
@@ -1830,23 +1886,6 @@ footer {
 	max-width: 560px;
 }
 
-.team-highlights {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.6rem;
-}
-
-.team-highlight-chip {
-	font-size: 0.74rem;
-	font-weight: 500;
-	color: var(--navy);
-	background: var(--cream-dark);
-	border: 1px solid var(--border);
-	padding: 0.45rem 0.9rem;
-	border-radius: 999px;
-	white-space: nowrap;
-}
-
 @media (max-width: 760px) {
 	.team-feature,
 	.team-feature.reverse {
@@ -1866,4 +1905,96 @@ footer {
 	.team-feature-bio {
 		max-width: none;
 	}
+}
+
+
+/* ─── JOIN-CARD MINI LEADERBOARD (kickoff.html entry card) ─── */
+.join-card-leaderboard {
+	width: 100%;
+	margin-top: 1.85rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--border);
+	display: flex;
+	flex-direction: column;
+	gap: 0.85rem;
+}
+
+.join-card-leaderboard-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+	font-size: 0.62rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+}
+
+.demo-badge.small {
+	padding: 0.2rem 0.55rem;
+	font-size: 0.56rem;
+}
+
+.mini-leaderboard {
+	display: flex;
+	flex-direction: column;
+	gap: 0.55rem;
+	width: 100%;
+}
+
+.mini-leaderboard-row {
+	display: flex;
+	align-items: baseline;
+	gap: 0.65rem;
+	width: 100%;
+}
+
+.mini-rank {
+	font-family: var(--font-score);
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--navy);
+	width: 14px;
+	flex-shrink: 0;
+	font-variant-numeric: tabular-nums;
+}
+
+.mini-school {
+	flex: 1;
+	min-width: 0;
+	font-size: 0.78rem;
+	color: var(--text-mid);
+	font-weight: 400;
+	text-align: left;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.mini-rp {
+	font-family: var(--font-score);
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--gold);
+	flex-shrink: 0;
+	font-variant-numeric: tabular-nums;
+}
+
+.mini-leaderboard-link {
+	font-size: 0.66rem;
+	font-weight: 500;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--gold);
+	text-decoration: none;
+	border-bottom: 1px solid var(--gold);
+	padding-bottom: 0.15rem;
+	align-self: flex-start;
+	transition: color 0.2s;
+}
+
+.mini-leaderboard-link:hover {
+	color: var(--gold-light);
+	border-color: var(--gold-light);
 }

@@ -15,9 +15,10 @@
         badge instead of an arrow until its first weekly snapshot.
 
    This file is used on two pages:
-     - kickoff.html   -> renders a top-5 preview into #leaderboardPreview
-     - leaderboard.html -> renders the full board into #leaderboardFull
-                            plus summary stats into #leaderboardSummary
+     - kickoff.html      -> renders a top-3 mini widget into #miniLeaderboard
+                             (tucked into the entry card at the top of the page)
+     - leaderboard.html  -> renders the full board into #leaderboardFull
+                             plus summary stats into #leaderboardSummary
    ───────────────────────────────────────────────────────────── */
 
 async function loadStandings() {
@@ -73,6 +74,16 @@ function rpChangeHTML(s) {
 	if (s.rpChange < 0)
 		return `<span class="rp-change down">${s.rpChange.toLocaleString()} this week</span>`;
 	return `<span class="rp-change same">No change this week</span>`;
+}
+
+function renderMiniRow(s) {
+	return `
+		<div class="mini-leaderboard-row">
+			<span class="mini-rank">${s.rank}</span>
+			<span class="mini-school">${s.school}</span>
+			<span class="mini-rp">${s.rp.toLocaleString()}</span>
+		</div>
+	`;
 }
 
 function renderRow(s, { showExtra }) {
@@ -146,13 +157,18 @@ function renderSummary(standings) {
 }
 
 async function initLeaderboard() {
+	const miniEl = document.getElementById("miniLeaderboard");
 	const previewEl = document.getElementById("leaderboardPreview");
 	const fullEl = document.getElementById("leaderboardFull");
 	const summaryEl = document.getElementById("leaderboardSummary");
 
-	if (!previewEl && !fullEl) return;
+	if (!miniEl && !previewEl && !fullEl) return;
 
 	const standings = await loadStandings();
+
+	if (miniEl) {
+		miniEl.innerHTML = standings.slice(0, 3).map(renderMiniRow).join("");
+	}
 
 	if (previewEl) {
 		previewEl.innerHTML = standings
