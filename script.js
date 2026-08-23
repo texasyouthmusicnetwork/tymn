@@ -21,7 +21,7 @@ async function initHeroCarousel() {
 	const nextBtn = carousel.querySelector(".hero-arrow.next");
 
 	// Carousel content lives in slides.json.
-	const res = await fetch("slides.json");
+	const res = await fetch("/slides.json");
 	const slidesData = await res.json();
 	if (!slidesData.length) return;
 

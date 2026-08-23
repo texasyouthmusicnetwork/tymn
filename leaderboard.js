@@ -21,7 +21,7 @@
    } */
 
 async function loadStandings() {
-	const res = await fetch("leaderboard-data.json");
+	const res = await fetch("/leaderboard-data.json");
 	const schools = await res.json();
 
 	// Current standings, ranked by RP today.

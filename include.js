@@ -1,6 +1,6 @@
 // Bump this whenever header.html/footer.html change, so browsers
 // that cached the old partials pick up the new version right away.
-const LAYOUT_VERSION = "4";
+const LAYOUT_VERSION = "5";
 
 async function includeHTML(selector, url) {
 	const el = document.querySelector(selector);
@@ -10,20 +10,23 @@ async function includeHTML(selector, url) {
 }
 
 function markActiveNavLink() {
-	let current = window.location.pathname.split("/").pop();
-	if (!current) current = "index.html";
+	// Normalize the current path so both "/about" and "/about/" match
+	// the "/about/" link in the nav, and the homepage normalizes to "/".
+	let current = window.location.pathname.replace(/index\.html$/, "");
+	if (!current.endsWith("/")) current += "/";
 
 	document.querySelectorAll(".nav-links a").forEach((link) => {
 		if (link.classList.contains("nav-cta")) return;
-		const linkPage = link.getAttribute("href").split("#")[0];
+		let linkPage = link.getAttribute("href").split("#")[0];
+		if (!linkPage.endsWith("/")) linkPage += "/";
 		if (linkPage === current) link.classList.add("active");
 	});
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
 	await Promise.all([
-		includeHTML("#site-header", "header.html"),
-		includeHTML("#site-footer", "footer.html"),
+		includeHTML("#site-header", "/header.html"),
+		includeHTML("#site-footer", "/footer.html"),
 	]);
 	markActiveNavLink();
 	document.dispatchEvent(new CustomEvent("layoutIncluded"));
