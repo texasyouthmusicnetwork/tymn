@@ -6,14 +6,26 @@
    come in. Once a week, copy "rp" into "rpLastWeek" to snapshot it —
    that's what drives the rank-change arrows. A new school starts
    with rpLastWeek: null and shows a "NEW" badge until its first
-   snapshot. */
+   snapshot.
+
+   Each entry in leaderboard-data.json needs this shape:
+   {
+     "school": "Example High School",
+     "city": "Austin",
+     "status": "verified",           // or "pending"
+     "rp": 1350,
+     "rpLastWeek": 1000,             // null for a brand-new school
+     "submissions": 4,
+     "uniqueInstruments": 3,
+     "outstandingPerformers": 1      // 0 if none yet
+   } */
 
 async function loadStandings() {
 	const res = await fetch("leaderboard-data.json");
 	const schools = await res.json();
 
 	// Current standings, ranked by RP today.
-	const byRp = [...schools].sort((a, b) => b.rp - a.rp);
+	const byRp = [...schools].sort((a, b) => (b.rp ?? 0) - (a.rp ?? 0));
 	byRp.forEach((s, i) => (s.rank = i + 1));
 
 	// Standings a week ago, ranked by last week's RP snapshot.
@@ -68,7 +80,7 @@ function renderMiniRow(s) {
 		<div class="mini-leaderboard-row">
 			<span class="mini-rank">${s.rank}</span>
 			<span class="mini-school">${s.school}</span>
-			<span class="mini-rp">${s.rp.toLocaleString()}</span>
+			<span class="mini-rp">${(s.rp ?? 0).toLocaleString()}</span>
 		</div>
 	`;
 }
@@ -80,10 +92,14 @@ function renderRow(s, { showExtra }) {
 			? `<span class="rank-badge pending">Pending</span>`
 			: "";
 
+	const submissions = s.submissions ?? 0;
+	const uniqueInstruments = s.uniqueInstruments ?? 0;
+	const outstandingPerformers = s.outstandingPerformers ?? 0;
+
 	const meta = showExtra
-		? `${s.city} · ${s.submissions} submission${s.submissions === 1 ? "" : "s"} · ${s.uniqueInstruments} instrument${s.uniqueInstruments === 1 ? "" : "s"}${
-				s.outstandingPerformers
-					? ` · ${s.outstandingPerformers} Outstanding Performer${s.outstandingPerformers > 1 ? "s" : ""}`
+		? `${s.city} · ${submissions} submission${submissions === 1 ? "" : "s"} · ${uniqueInstruments} instrument${uniqueInstruments === 1 ? "" : "s"}${
+				outstandingPerformers
+					? ` · ${outstandingPerformers} Outstanding Performer${outstandingPerformers > 1 ? "s" : ""}`
 					: ""
 			}`
 		: s.city;
@@ -99,7 +115,7 @@ function renderRow(s, { showExtra }) {
 				<div class="leaderboard-school-meta">${meta}</div>
 			</div>
 			<div class="leaderboard-rp">
-				<span class="rp-value">${s.rp.toLocaleString()}<span class="rp-unit">RP</span></span>
+				<span class="rp-value">${(s.rp ?? 0).toLocaleString()}<span class="rp-unit">RP</span></span>
 				${rpChangeHTML(s)}
 			</div>
 		</div>
@@ -108,12 +124,12 @@ function renderRow(s, { showExtra }) {
 
 function renderSummary(standings) {
 	const totalSchools = standings.length;
-	const totalSubmissions = standings.reduce((n, s) => n + s.submissions, 0);
+	const totalSubmissions = standings.reduce((n, s) => n + (s.submissions ?? 0), 0);
 	const totalOutstanding = standings.reduce(
-		(n, s) => n + s.outstandingPerformers,
+		(n, s) => n + (s.outstandingPerformers ?? 0),
 		0,
 	);
-	const instrumentSum = standings.reduce((n, s) => n + s.uniqueInstruments, 0);
+	const instrumentSum = standings.reduce((n, s) => n + (s.uniqueInstruments ?? 0), 0);
 
 	return `
 		<div class="stat-item">
@@ -172,3 +188,24 @@ async function initLeaderboard() {
 }
 
 document.addEventListener("DOMContentLoaded", initLeaderboard);
+
+// Entry form doesn't open until the challenge officially starts.
+// Disables every ".js-entry-link" button until that date, then leaves
+// them alone (the real Google Form link) from then on.
+const ENTRY_OPEN_DATE = new Date(2026, 8, 1); // September 1, 2026
+
+function gateEntryLinks() {
+	if (new Date() >= ENTRY_OPEN_DATE) return;
+
+	document.querySelectorAll(".js-entry-link").forEach((link) => {
+		link.classList.add("is-disabled");
+		link.removeAttribute("href");
+		link.removeAttribute("target");
+		link.setAttribute("aria-disabled", "true");
+		link.title = "Opens September 1, 2026";
+		link.textContent = "Not Open Yet";
+		link.addEventListener("click", (e) => e.preventDefault());
+	});
+}
+
+document.addEventListener("DOMContentLoaded", gateEntryLinks);

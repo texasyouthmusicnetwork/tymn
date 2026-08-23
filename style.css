@@ -412,6 +412,14 @@ nav {
 	background: var(--gold-light);
 }
 
+.btn-primary.is-disabled {
+	background: rgba(201, 168, 76, 0.3);
+	border-color: rgba(201, 168, 76, 0.3);
+	color: rgba(13, 27, 42, 0.55);
+	cursor: not-allowed;
+	pointer-events: none;
+}
+
 .btn-sec {
 	padding: 0.85rem 2rem;
 	border: 1px solid var(--gold);
@@ -1139,6 +1147,7 @@ section {
 	border-bottom: 1px solid var(--gold);
 	padding-bottom: 0.15rem;
 	transition: color 0.2s;
+	overflow-wrap: anywhere;
 }
 
 .card-btn:hover {
