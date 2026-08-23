@@ -1,25 +1,12 @@
-/* ─────────────────────────────────────────────────────────────
-   TYMN School Leaderboard
-   ─────────────────────────────────────────────────────────────
-   ★ All leaderboard content lives in leaderboard-data.json — this
-     file only renders it. To update standings for real:
+/* TYMN School Leaderboard
+   Renders leaderboard-data.json into #miniLeaderboard (kickoff.html)
+   and #leaderboardFull / #leaderboardSummary (leaderboard.html).
 
-     1. Bump a school's "rp" value up as new submissions/awards come in
-        (see the scoring breakdown on kickoff.html for point values).
-     2. Once a week, copy each school's current "rp" into "rpLastWeek".
-        That snapshot is what drives the rank-change arrows and the
-        "this week" RP number below — you never have to compute a
-        rank by hand.
-     3. Add a brand-new school by adding a new object to the JSON
-        array with rpLastWeek set to null — it will show a "NEW"
-        badge instead of an arrow until its first weekly snapshot.
-
-   This file is used on two pages:
-     - kickoff.html      -> renders a top-3 mini widget into #miniLeaderboard
-                             (tucked into the entry card at the top of the page)
-     - leaderboard.html  -> renders the full board into #leaderboardFull
-                             plus summary stats into #leaderboardSummary
-   ───────────────────────────────────────────────────────────── */
+   To update standings: bump a school's "rp" as submissions/awards
+   come in. Once a week, copy "rp" into "rpLastWeek" to snapshot it —
+   that's what drives the rank-change arrows. A new school starts
+   with rpLastWeek: null and shows a "NEW" badge until its first
+   snapshot. */
 
 async function loadStandings() {
 	const res = await fetch("leaderboard-data.json");
@@ -126,10 +113,6 @@ function renderSummary(standings) {
 		(n, s) => n + s.outstandingPerformers,
 		0,
 	);
-	const totalInstruments = new Set();
-	// uniqueInstruments per school isn't broken out by name in demo data,
-	// so this stat totals the per-school counts as a stand-in until real
-	// instrument-name data is being collected.
 	const instrumentSum = standings.reduce((n, s) => n + s.uniqueInstruments, 0);
 
 	return `
@@ -158,11 +141,10 @@ function renderSummary(standings) {
 
 async function initLeaderboard() {
 	const miniEl = document.getElementById("miniLeaderboard");
-	const previewEl = document.getElementById("leaderboardPreview");
 	const fullEl = document.getElementById("leaderboardFull");
 	const summaryEl = document.getElementById("leaderboardSummary");
 
-	if (!miniEl && !previewEl && !fullEl) return;
+	if (!miniEl && !fullEl) return;
 
 	const standings = await loadStandings();
 
@@ -170,13 +152,6 @@ async function initLeaderboard() {
 		miniEl.innerHTML = standings.length
 			? standings.slice(0, 3).map(renderMiniRow).join("")
 			: `<p class="mini-leaderboard-empty">No submissions yet — be the first.</p>`;
-	}
-
-	if (previewEl) {
-		previewEl.innerHTML = standings
-			.slice(0, 5)
-			.map((s) => renderRow(s, { showExtra: false }))
-			.join("");
 	}
 
 	if (fullEl) {

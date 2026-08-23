@@ -84,11 +84,37 @@ nav {
 	color: var(--gold);
 }
 
+.nav-right {
+	display: flex;
+	align-items: center;
+	gap: 1.75rem;
+}
+
 .nav-links {
 	display: flex;
 	gap: 2.5rem;
 	list-style: none;
 	align-items: center;
+}
+
+.nav-discord {
+	display: flex;
+	align-items: center;
+	opacity: 0.85;
+	transition:
+		opacity 0.2s,
+		transform 0.2s;
+}
+
+.nav-discord:hover {
+	opacity: 1;
+	transform: scale(1.08);
+}
+
+.nav-discord-icon {
+	width: 20px;
+	height: 20px;
+	display: block;
 }
 
 .nav-links a {
@@ -1373,7 +1399,9 @@ footer {
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 900px) {
-	.about-grid {
+	.about-grid,
+	#mission .about-grid,
+	#kickoff-overview .about-grid {
 		grid-template-columns: 1fr;
 		gap: 3rem;
 	}
@@ -1414,7 +1442,8 @@ footer {
 		flex-direction: row;
 		align-items: center;
 	}
-	.focus-grid {
+	.focus-grid,
+	.focus-grid.cols-3 {
 		grid-template-columns: 1fr;
 	}
 	.awards-grid {
