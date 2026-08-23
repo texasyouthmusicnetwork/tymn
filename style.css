@@ -1828,3 +1828,52 @@ footer {
 	font-weight: 300;
 	font-style: italic;
 }
+
+
+/* ─── STATEMENT HEADINGS (mission-style emphasis blocks) ─── */
+.statement-block {
+	position: relative;
+	max-width: 820px;
+	margin-bottom: 1rem;
+}
+
+.statement-block::before {
+	content: "\201C";
+	position: absolute;
+	top: -4.2rem;
+	left: -2rem;
+	font-family: "Cormorant Garamond", serif;
+	font-size: 11rem;
+	line-height: 1;
+	color: var(--gold);
+	opacity: 0.14;
+	pointer-events: none;
+	user-select: none;
+	z-index: 0;
+}
+
+.statement-block > * {
+	position: relative;
+	z-index: 1;
+}
+
+.statement-title {
+	font-family: "Cormorant Garamond", serif;
+	font-size: clamp(2.2rem, 5vw, 3.6rem);
+	font-weight: 400;
+	line-height: 1.2;
+	color: var(--navy);
+}
+
+.statement-title.light {
+	color: var(--white);
+}
+
+.statement-title .accent {
+	color: var(--gold);
+	font-style: italic;
+}
+
+.statement-title.light .accent {
+	color: var(--gold-light);
+}
