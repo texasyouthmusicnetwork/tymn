@@ -167,7 +167,9 @@ async function initLeaderboard() {
 	const standings = await loadStandings();
 
 	if (miniEl) {
-		miniEl.innerHTML = standings.slice(0, 3).map(renderMiniRow).join("");
+		miniEl.innerHTML = standings.length
+			? standings.slice(0, 3).map(renderMiniRow).join("")
+			: `<p class="mini-leaderboard-empty">No submissions yet — be the first.</p>`;
 	}
 
 	if (previewEl) {
@@ -178,9 +180,15 @@ async function initLeaderboard() {
 	}
 
 	if (fullEl) {
-		fullEl.innerHTML = standings
-			.map((s) => renderRow(s, { showExtra: true }))
-			.join("");
+		fullEl.innerHTML = standings.length
+			? standings.map((s) => renderRow(s, { showExtra: true })).join("")
+			: `<div class="leaderboard-empty">
+					<p>No submissions yet.</p>
+					<p>
+						Standings will start filling in once the Fall Kickoff
+						Challenge opens on September 1 — check back soon.
+					</p>
+				</div>`;
 	}
 
 	if (summaryEl) {

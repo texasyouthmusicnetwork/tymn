@@ -521,8 +521,8 @@ section {
 	margin-top: 2.5rem;
 }
 
-#about-us .about-grid {
-	grid-template-columns: 1fr 280px;
+#about-us .about-body {
+	max-width: 640px;
 }
 
 #mission .about-grid {
@@ -1121,186 +1121,26 @@ section {
 
 /* ─── CONTACT / JOIN ─── */
 #contact {
-	background: var(--navy-mid);
-	overflow: hidden;
-	position: relative;
+	background: var(--cream);
 }
 
-#contact::before {
-	content: "";
-	position: absolute;
-	top: -80px;
-	right: -80px;
-	width: 500px;
-	height: 500px;
-	border-radius: 50%;
-	border: 1px solid rgba(201, 168, 76, 0.06);
-	pointer-events: none;
+/* ─── GET INVOLVED: WHY REACH OUT ─── */
+#involved-facts {
+	background: var(--navy);
 }
 
-#contact::after {
-	content: "";
-	position: absolute;
-	top: 40px;
-	right: 40px;
-	width: 300px;
-	height: 300px;
-	border-radius: 50%;
-	border: 1px solid rgba(201, 168, 76, 0.08);
-	pointer-events: none;
-}
-
-.contact-grid {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 6rem;
-	margin-top: 3.5rem;
-}
-
-.contact-left p {
-	color: rgba(255, 255, 255, 0.55);
-	font-size: 0.95rem;
-	font-weight: 300;
-	line-height: 1.8;
-	margin-bottom: 2.5rem;
-}
-
-.contact-items {
+.involved-footlinks {
+	margin-top: 3rem;
 	display: flex;
-	flex-direction: column;
-	gap: 1.25rem;
+	flex-wrap: wrap;
+	gap: 0.75rem 2.5rem;
+	font-size: 0.85rem;
 }
 
-.contact-item {
-	display: flex;
-	flex-direction: column;
-	gap: 0.2rem;
-}
-
-.contact-item-label {
-	font-size: 0.68rem;
-	font-weight: 500;
-	letter-spacing: 0.18em;
-	text-transform: uppercase;
-	color: var(--gold);
-}
-
-.contact-item-value {
-	font-size: 0.95rem;
-	color: rgba(255, 255, 255, 0.8);
-	font-weight: 300;
+.involved-footlinks a {
 	text-decoration: none;
-	transition: color 0.2s;
-}
-
-.contact-item-value:hover {
-	color: var(--gold-light);
-}
-
-.contact-right {
-	position: relative;
-	z-index: 2;
-}
-
-.contact-form-card {
-	background: rgba(255, 255, 255, 0.04);
-	border: 1px solid rgba(201, 168, 76, 0.2);
-	padding: 2.5rem;
-}
-
-.contact-form-card h3 {
-	font-family: "Cormorant Garamond", serif;
-	font-size: 1.4rem;
-	font-weight: 400;
-	color: var(--white);
-	margin-bottom: 0.5rem;
-}
-
-.contact-form-card .form-sub {
-	font-size: 0.83rem;
-	color: rgba(255, 255, 255, 0.4);
-	margin-bottom: 2rem;
-	font-weight: 300;
-}
-
-.form-group {
-	margin-bottom: 1.25rem;
-}
-
-.form-group label {
-	display: block;
-	font-size: 0.7rem;
-	font-weight: 400;
-	letter-spacing: 0.12em;
-	text-transform: uppercase;
-	color: rgba(255, 255, 255, 0.45);
-	margin-bottom: 0.45rem;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-	width: 100%;
-	background: rgba(255, 255, 255, 0.04);
-	border: 1px solid rgba(255, 255, 255, 0.12);
-	color: rgba(255, 255, 255, 0.85);
-	padding: 0.75rem 1rem;
-	font-size: 0.9rem;
-	font-family: "DM Sans", sans-serif;
-	font-weight: 300;
-	border-radius: 0;
-	outline: none;
-	transition: border-color 0.2s;
-}
-
-.form-group select option {
-	background: var(--navy-mid);
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-	border-color: rgba(201, 168, 76, 0.5);
-}
-
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-	color: rgba(255, 255, 255, 0.2);
-}
-
-.form-row {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 1rem;
-}
-
-.form-submit {
-	width: 100%;
-	background: var(--gold);
-	border: none;
-	color: var(--navy);
-	padding: 0.95rem;
-	font-size: 0.8rem;
-	font-weight: 500;
-	letter-spacing: 0.12em;
-	text-transform: uppercase;
-	font-family: "DM Sans", sans-serif;
-	cursor: pointer;
-	transition: background 0.2s;
-	margin-top: 0.5rem;
-	border-radius: 0;
-}
-
-.form-submit:hover {
-	background: var(--gold-light);
-}
-
-.form-note {
-	font-size: 0.72rem;
-	color: rgba(255, 255, 255, 0.25);
-	text-align: center;
-	margin-top: 0.85rem;
-	font-weight: 300;
+	border-bottom: 1px solid var(--border-gold);
+	padding-bottom: 2px;
 }
 
 /* ─── TEAM ─── */
@@ -1533,11 +1373,7 @@ footer {
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 900px) {
-	.about-grid,
-	.contact-grid,
-	#about-us .about-grid,
-	#mission .about-grid,
-	#kickoff-overview .about-grid {
+	.about-grid {
 		grid-template-columns: 1fr;
 		gap: 3rem;
 	}
@@ -1605,35 +1441,6 @@ footer {
 
 
 /* ─── LEADERBOARD ─── */
-.leaderboard-demo-banner {
-	margin-top: 2rem;
-	margin-bottom: 2.5rem;
-	display: flex;
-	align-items: center;
-	gap: 0.85rem;
-	flex-wrap: wrap;
-	background: var(--gold-pale);
-	border: 1px solid var(--border-gold);
-	padding: 0.9rem 1.25rem;
-	border-radius: 2px;
-	font-size: 0.85rem;
-	color: var(--text-mid);
-	font-weight: 400;
-	line-height: 1.5;
-}
-
-.demo-badge {
-	background: var(--navy);
-	color: var(--gold-light);
-	font-size: 0.65rem;
-	font-weight: 600;
-	letter-spacing: 0.1em;
-	text-transform: uppercase;
-	padding: 0.3rem 0.7rem;
-	border-radius: 2px;
-	flex-shrink: 0;
-}
-
 .leaderboard-list {
 	background: var(--white);
 	border: 1px solid var(--border);
@@ -1931,11 +1738,6 @@ footer {
 	color: var(--text-muted);
 }
 
-.demo-badge.small {
-	padding: 0.2rem 0.55rem;
-	font-size: 0.56rem;
-}
-
 .mini-leaderboard {
 	display: flex;
 	flex-direction: column;
@@ -1997,4 +1799,32 @@ footer {
 .mini-leaderboard-link:hover {
 	color: var(--gold-light);
 	border-color: var(--gold-light);
+}
+
+.leaderboard-empty {
+	padding: 3.5rem 2rem;
+	text-align: center;
+	color: var(--text-muted);
+}
+
+.leaderboard-empty p:first-child {
+	font-family: "Cormorant Garamond", serif;
+	font-size: 1.4rem;
+	color: var(--navy);
+	margin-bottom: 0.5rem;
+}
+
+.leaderboard-empty p:last-child {
+	font-size: 0.9rem;
+	font-weight: 300;
+	max-width: 420px;
+	margin: 0 auto;
+	line-height: 1.6;
+}
+
+.mini-leaderboard-empty {
+	font-size: 0.8rem;
+	color: var(--text-muted);
+	font-weight: 300;
+	font-style: italic;
 }
