@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>
+			School Leaderboard — TYMN — Texas Youth Music Network
+		</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="style.css?v=1" />
+	</head>
+
+	<body>
+		<div id="site-header"></div>
+
+		<!-- ─────────── PAGE HEADER ─────────── -->
+		<section class="page-header">
+			<div class="section-inner">
+				<h1 class="page-header-title">
+					School <span>Leaderboard</span>
+				</h1>
+			</div>
+		</section>
+
+		<!-- ─────────── FULL LEADERBOARD ─────────── -->
+		<section id="leaderboard-full">
+			<div class="section-inner">
+				<h2 class="section-title">2026 Fall Kickoff Challenge</h2>
+				<p class="involved-intro">
+					Every Texas school starts the season at 1,000 RP.
+					Submissions, Outstanding Performers, instrument
+					diversity, and weekly activity all move the needle —
+					full scoring breakdown is on the
+					<a href="kickoff.html#kickoff-timeline-section"
+						>Kickoff Challenge page</a
+					>.
+				</p>
+
+				<div class="leaderboard-demo-banner">
+					<span class="demo-badge">Preview</span>
+					This board is populated with placeholder demo schools
+					and simulated weekly movement so we can test the design
+					before real submissions come in. Nothing here reflects
+					an actual entry yet.
+				</div>
+
+				<div class="leaderboard-list full" id="leaderboardFull"></div>
+			</div>
+		</section>
+
+		<!-- ─────────── SUMMARY STATS ─────────── -->
+		<section id="leaderboard-summary">
+			<div class="section-inner">
+				<h2 class="section-title light">By the numbers</h2>
+				<div class="stat-grid" id="leaderboardSummary"></div>
+			</div>
+		</section>
+
+		<!-- ─────────── ENTER CTA ─────────── -->
+		<section id="enter">
+			<div class="section-inner">
+				<h2 class="section-title light center">
+					Want your school higher on the board?
+				</h2>
+				<p class="volunteer-cta-text">
+					Every submission counts toward your school's total.
+					Enter the Fall Kickoff Challenge and help your school
+					climb the standings.
+				</p>
+				<div class="cta-buttons">
+					<a
+						href="https://docs.google.com/forms/d/e/1FAIpQLSePm9b_--rPcoJzsrProMHlxIdxuVlpl-CW3gj6mzcshcsgrw/viewform?usp=dialog"
+						target="_blank"
+						class="btn-primary"
+						>Enter Now →</a
+					>
+					<a
+						href="https://discord.com/invite/cGeuXmus5p"
+						target="_blank"
+						class="btn-sec"
+						>Join the Discord →</a
+					>
+				</div>
+			</div>
+		</section>
+
+		<div id="site-footer"></div>
+
+		<script src="include.js?v=1"></script>
+		<script src="leaderboard.js?v=1"></script>
+	</body>
+</html>

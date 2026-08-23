@@ -22,6 +22,8 @@
 	--text-light: #9aaabb;
 	--border: rgba(13, 27, 42, 0.12);
 	--border-gold: rgba(201, 168, 76, 0.35);
+	--rank-up: #3f8f5f;
+	--rank-down: #b2452f;
 }
 
 html {
@@ -1538,5 +1540,215 @@ footer {
 @media (max-width: 600px) {
 	.form-row {
 		grid-template-columns: 1fr;
+	}
+}
+
+
+/* ─── LEADERBOARD ─── */
+.center-intro {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+.leaderboard-demo-banner {
+	margin-top: 2rem;
+	margin-bottom: 2.5rem;
+	display: flex;
+	align-items: center;
+	gap: 0.85rem;
+	flex-wrap: wrap;
+	background: var(--gold-pale);
+	border: 1px solid var(--border-gold);
+	padding: 0.9rem 1.25rem;
+	border-radius: 2px;
+	font-size: 0.85rem;
+	color: var(--text-mid);
+	font-weight: 400;
+	line-height: 1.5;
+}
+
+.demo-badge {
+	background: var(--navy);
+	color: var(--gold-light);
+	font-size: 0.65rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	padding: 0.3rem 0.7rem;
+	border-radius: 2px;
+	flex-shrink: 0;
+}
+
+.leaderboard-list {
+	background: var(--white);
+	border: 1px solid var(--border);
+}
+
+.leaderboard-row {
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+	padding: 1.1rem 1.5rem;
+	border-bottom: 1px solid var(--border);
+}
+
+.leaderboard-row:last-child {
+	border-bottom: none;
+}
+
+.leaderboard-row.top3 {
+	border-left: 3px solid var(--gold);
+}
+
+.leaderboard-rank {
+	width: 56px;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.15rem;
+}
+
+.rank-num {
+	font-family: "Cormorant Garamond", serif;
+	font-size: 1.5rem;
+	font-weight: 500;
+	color: var(--navy);
+	line-height: 1;
+}
+
+.rank-change {
+	font-size: 0.7rem;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.rank-change.up {
+	color: var(--rank-up);
+}
+
+.rank-change.down {
+	color: var(--rank-down);
+}
+
+.rank-change.same {
+	color: var(--text-light);
+}
+
+.rank-change.new {
+	color: var(--gold);
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	font-size: 0.62rem;
+}
+
+.leaderboard-school {
+	flex: 1;
+	min-width: 0;
+}
+
+.leaderboard-school-name {
+	font-weight: 500;
+	color: var(--navy);
+	font-size: 0.98rem;
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	flex-wrap: wrap;
+}
+
+.rank-badge.pending {
+	font-size: 0.6rem;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--text-muted);
+	border: 1px solid var(--border);
+	padding: 0.15rem 0.5rem;
+	border-radius: 2px;
+	font-weight: 500;
+}
+
+.leaderboard-school-meta {
+	font-size: 0.78rem;
+	color: var(--text-muted);
+	margin-top: 0.25rem;
+	font-weight: 300;
+}
+
+.leaderboard-rp {
+	text-align: right;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 0.15rem;
+	min-width: 110px;
+	flex-shrink: 0;
+}
+
+.rp-value {
+	font-family: "Cormorant Garamond", serif;
+	font-size: 1.25rem;
+	font-weight: 500;
+	color: var(--gold);
+	white-space: nowrap;
+}
+
+.rp-unit {
+	font-family: "DM Sans", sans-serif;
+	font-size: 0.62rem;
+	color: var(--text-muted);
+	font-weight: 500;
+	margin-left: 0.2rem;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.rp-change {
+	font-size: 0.72rem;
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.rp-change.up {
+	color: var(--rank-up);
+}
+
+.rp-change.down {
+	color: var(--rank-down);
+}
+
+.rp-change.same,
+.rp-change.new {
+	color: var(--text-light);
+}
+
+.leaderboard-cta {
+	text-align: center;
+	margin-top: 2.5rem;
+}
+
+#leaderboard-summary {
+	background: var(--navy);
+}
+
+@media (max-width: 640px) {
+	.leaderboard-row {
+		flex-wrap: wrap;
+		gap: 0.5rem 1rem;
+	}
+
+	.leaderboard-school {
+		flex: 1 1 auto;
+	}
+
+	.leaderboard-rp {
+		flex: 1 0 100%;
+		flex-direction: row;
+		align-items: baseline;
+		gap: 0.6rem;
+		text-align: left;
+		margin-left: calc(56px + 1rem);
+		min-width: 0;
 	}
 }
