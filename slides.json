@@ -1,0 +1,23 @@
+[
+	{
+		"image": "assets/orch1.jpg",
+		"title": "Fall Kickoff Challenge is Now Open!",
+		"desc": "Join us for the Fall Kickoff Challenge, a great opportunity to showcase your talents and compete with other student musicians. Runs 9/1 - 9/30.",
+		"link": "kickoff.html",
+		"linkText": "Learn More"
+	},
+	{
+		"image": "assets/orch3.jpg",
+		"title": "Opportunities",
+		"desc": "Access to resources and virtual programs to help students further develop their musical passion, and building confidence for competitions, auditions, and ensembles alike.",
+		"link": "about.html",
+		"linkText": "Learn More"
+	},
+	{
+		"image": "assets/orch4.jpg",
+		"title": "Community",
+		"desc": "Creating a network of student musicians from schools and cities across Texas.",
+		"link": "about.html",
+		"linkText": "Learn More"
+	}
+]
