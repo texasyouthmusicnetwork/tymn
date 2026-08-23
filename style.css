@@ -1559,7 +1559,7 @@ footer {
 		grid-template-columns: repeat(2, 1fr);
 	}
 	.hero-carousel {
-		height: 360px;
+		height: 420px;
 	}
 	.hero-arrow {
 		width: 34px;
@@ -1637,7 +1637,7 @@ footer {
 		font-size: 1.3rem;
 	}
 	.hero-carousel {
-		height: 320px;
+		height: 380px;
 	}
 	.hero-arrow {
 		display: none;
