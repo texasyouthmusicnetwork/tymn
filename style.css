@@ -1136,6 +1136,19 @@ section {
 	flex-shrink: 0;
 }
 
+.inv-card-btn {
+	display: inline-block;
+	font-size: 0.75rem;
+	font-weight: 500;
+	letter-spacing: 0.1em;
+	color: var(--navy);
+	text-decoration: none;
+	border-bottom: 1px solid var(--gold);
+	padding-bottom: 0.15rem;
+	transition: color 0.2s;
+	overflow-wrap: anywhere;
+}
+
 .card-btn {
 	display: inline-block;
 	font-size: 0.75rem;
@@ -1150,8 +1163,10 @@ section {
 	overflow-wrap: anywhere;
 }
 
-.card-btn:hover {
+.card-btn:hover,
+.inv-card-btn:hover {
 	color: var(--gold);
+	border-color: var(--gold);
 }
 
 /* ─── CONTACT / JOIN ─── */
@@ -1165,7 +1180,8 @@ section {
 }
 
 .involved-footlinks {
-	margin-top: 3rem;
+	/* margin-top: 3rem; */
+	margin-top: -3rem;
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.75rem 2.5rem;
@@ -1477,7 +1493,6 @@ footer {
 	}
 }
 
-
 /* ─── LEADERBOARD ─── */
 .leaderboard-list {
 	background: var(--white);
@@ -1654,7 +1669,6 @@ footer {
 	}
 }
 
-
 /* ─── TEAM (about page — editorial feature layout) ─── */
 .team-feature-list {
 	display: flex;
@@ -1751,7 +1765,6 @@ footer {
 		max-width: none;
 	}
 }
-
 
 /* ─── JOIN-CARD MINI LEADERBOARD (kickoff.html entry card) ─── */
 .join-card-leaderboard {
@@ -1866,7 +1879,6 @@ footer {
 	font-weight: 300;
 	font-style: italic;
 }
-
 
 /* ─── STATEMENT HEADINGS (mission-style emphasis blocks) ─── */
 .statement-block {
