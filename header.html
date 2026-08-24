@@ -2,6 +2,17 @@
 <nav>
 	<div class="nav-inner">
 		<a class="nav-logo" href="/">TY<span>M</span>N</a>
+		<button
+			class="nav-toggle"
+			type="button"
+			aria-label="Open navigation menu"
+			aria-expanded="false"
+			aria-controls="mobileNav"
+		>
+			<span></span>
+			<span></span>
+			<span></span>
+		</button>
 		<div class="nav-right">
 			<ul class="nav-links">
 				<li><a href="/">Home</a></li>
@@ -23,8 +34,29 @@
 				rel="noopener"
 				aria-label="Join TYMN on Discord"
 			>
-				<img src="/assets/discord-icon.svg" alt="" class="nav-discord-icon" />
+				<img
+					src="/assets/discord-icon.svg"
+					alt=""
+					class="nav-discord-icon"
+				/>
 			</a>
 		</div>
+	</div>
+	<div class="nav-mobile-panel" id="mobileNav">
+		<ul class="nav-mobile-links">
+			<li><a href="/">Home</a></li>
+			<li><a href="/about/">About</a></li>
+			<li><a href="/involved/">Get Involved</a></li>
+			<li><a href="/kickoff/" class="nav-cta">Fall Kickoff 2026</a></li>
+			<li><a href="/leaderboard/">School Leaderboard</a></li>
+			<li>
+				<a
+					href="https://discord.com/invite/cGeuXmus5p"
+					target="_blank"
+					rel="noopener"
+					>Join Discord</a
+				>
+			</li>
+		</ul>
 	</div>
 </nav>
