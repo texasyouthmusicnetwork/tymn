@@ -952,6 +952,92 @@ section {
 	border-color: rgba(255, 255, 255, 0.12);
 }
 
+/* ─── MAILING LIST ─── */
+#mailing-list {
+	background: var(--cream-dark);
+}
+
+.mailing-list-card {
+	background: var(--white);
+	border: 1px solid var(--border);
+	border-top: 3px solid var(--gold);
+	padding: 3.5rem;
+	display: grid;
+	grid-template-columns: 340px 1fr;
+	gap: 3rem;
+	align-items: center;
+}
+
+.mailing-list-text {
+	margin-top: 1rem;
+	font-size: var(--body-copy-size);
+	color: var(--text-mid);
+	font-weight: 300;
+	line-height: var(--body-copy-line);
+}
+
+.mailing-list-form {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+.form-row {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 1.25rem;
+}
+
+.form-field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.form-field label {
+	font-size: 0.68rem;
+	font-weight: 500;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+}
+
+.required-mark {
+	color: var(--rank-down);
+}
+
+.form-field input {
+	font-family: "DM Sans", sans-serif;
+	font-size: 0.92rem;
+	color: var(--text-dark);
+	background: var(--cream);
+	border: 1px solid var(--border);
+	border-radius: 2px;
+	padding: 0.75rem 0.9rem;
+	transition: border-color 0.2s;
+}
+
+.form-field input:focus {
+	outline: none;
+	border-color: var(--gold);
+}
+
+.mailing-list-form-footer {
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+}
+
+.mailing-list-status {
+	font-size: 0.85rem;
+	color: var(--gold);
+	font-weight: 500;
+}
+
+.mailing-list-frame {
+	display: none;
+}
+
 /* ─── GET INVOLVED ─── */
 #involved {
 	background: var(--cream);
@@ -1196,6 +1282,22 @@ section {
 	height: 36px;
 	margin-bottom: 1.5rem;
 	color: var(--gold);
+}
+
+.social-icons-row {
+	display: flex;
+	gap: 0.75rem;
+	margin-bottom: 1.5rem;
+}
+
+.social-icons-row .involved-icon {
+	margin-bottom: 0;
+}
+
+.social-links {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
 }
 
 .involved-card-title {
@@ -1584,13 +1686,22 @@ footer {
 	#kickoff-overview .about-grid,
 	#about-us .about-grid,
 	#intro .about-grid,
-	.discord-widget-grid {
+	.discord-widget-grid,
+	.mailing-list-card {
 		grid-template-columns: 1fr;
 		gap: 3rem;
 	}
 	.about-emblem {
 		max-width: 220px;
 		margin: 0 auto;
+	}
+	.form-row {
+		grid-template-columns: 1fr;
+	}
+	.mailing-list-form-footer {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.75rem;
 	}
 	.discord-widget-frame {
 		justify-self: stretch;
@@ -1713,9 +1824,6 @@ footer {
 		left: -0.7rem;
 		top: -2.8rem;
 		font-size: 6.6rem;
-	}
-	.form-row {
-		grid-template-columns: 1fr;
 	}
 }
 

@@ -76,4 +76,29 @@ async function initHeroCarousel() {
 	resetAutoplay();
 }
 
+function initMailingListForm() {
+	const form = document.getElementById("mailingListForm");
+	if (!form) return;
+
+	const frame = document.getElementById("mailingListFrame");
+	const status = document.getElementById("mailingListStatus");
+	const submitBtn = form.querySelector(".mailing-list-submit");
+	let submitted = false;
+
+	form.addEventListener("submit", () => {
+		submitted = true;
+		submitBtn.classList.add("is-disabled");
+		status.textContent = "Signing you up…";
+	});
+
+	frame.addEventListener("load", () => {
+		if (!submitted) return;
+		submitted = false;
+		submitBtn.classList.remove("is-disabled");
+		status.textContent = "You're on the list — thanks for signing up!";
+		form.reset();
+	});
+}
+
 document.addEventListener("DOMContentLoaded", initHeroCarousel);
+document.addEventListener("DOMContentLoaded", initMailingListForm);
