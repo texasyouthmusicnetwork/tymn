@@ -1,7 +1,7 @@
 function renderHeroSlide(slide) {
 	return `
 		<div class="hero-slide" style="background-image: url('${slide.image}');">
-			<div class="hero-slide-kicker">Texas Youth <span>Music</span> Network</div>
+			<div class="hero-slide-kicker">Texas Youth Music Network</div>
 			<div class="hero-slide-content">
 				<h2 class="hero-slide-title">${slide.title}</h2>
 				<p class="hero-slide-desc">${slide.desc}</p>

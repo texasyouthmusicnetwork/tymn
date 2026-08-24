@@ -1,6 +1,6 @@
 // Bump this whenever header.html/footer.html change, so browsers
 // that cached the old partials pick up the new version right away.
-const LAYOUT_VERSION = "6";
+const LAYOUT_VERSION = "7";
 
 async function includeHTML(selector, url) {
 	const el = document.querySelector(selector);

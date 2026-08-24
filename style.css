@@ -7,24 +7,24 @@
 }
 
 :root {
-	--navy: #0d1b2a;
-	--navy-mid: #1a2e45;
-	--navy-light: #243d57;
-	--gold: #c9a84c;
-	--gold-light: #e8c97a;
-	--gold-pale: #f5e9c8;
-	--cream: #faf8f3;
-	--cream-dark: #f0ece0;
+	--navy: #16324f;
+	--navy-mid: #1f4166;
+	--navy-light: #2c5680;
+	--gold: #d9a53f;
+	--gold-light: #eec173;
+	--gold-pale: #f7ecc9;
+	--cream: #faf5ea;
+	--cream-dark: #f1e9d8;
 	--white: #ffffff;
-	--text-dark: #0d1b2a;
-	--text-mid: #3a4a5c;
-	--text-muted: #6b7a8d;
-	--text-light: #9aaabb;
-	--border: rgba(13, 27, 42, 0.12);
-	--border-gold: rgba(201, 168, 76, 0.35);
+	--text-dark: #16324f;
+	--text-mid: #3f5471;
+	--text-muted: #72859d;
+	--text-light: #a3b3c6;
+	--border: rgba(22, 50, 79, 0.12);
+	--border-gold: rgba(217, 165, 63, 0.35);
 	--rank-up: #3f8f5f;
 	--rank-down: #b2452f;
-	--font-score: "Oswald", "DM Sans", sans-serif;
+	--font-score: "Baloo 2", "Quicksand", sans-serif;
 	--body-copy-size: 0.96rem;
 	--body-copy-line: 1.75;
 }
@@ -44,7 +44,7 @@ p a:hover {
 }
 
 body {
-	font-family: "DM Sans", sans-serif;
+	font-family: "Quicksand", sans-serif;
 	background: var(--cream);
 	color: var(--text-dark);
 	line-height: 1.6;
@@ -58,9 +58,9 @@ nav {
 	left: 0;
 	right: 0;
 	z-index: 100;
-	background: rgba(13, 27, 42, 0.96);
+	background: rgba(22, 50, 79, 0.96);
 	backdrop-filter: blur(12px);
-	border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+	border-bottom: 1px solid rgba(217, 165, 63, 0.2);
 }
 
 .nav-inner {
@@ -74,7 +74,10 @@ nav {
 }
 
 .nav-logo {
-	font-family: "Cormorant Garamond", serif;
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	font-family: "Baloo 2", sans-serif;
 	font-size: 1.5rem;
 	font-weight: 500;
 	color: var(--white);
@@ -82,8 +85,10 @@ nav {
 	text-decoration: none;
 }
 
-.nav-logo span {
-	color: var(--gold);
+.nav-logo-icon {
+	width: 34px;
+	height: 34px;
+	display: block;
 }
 
 .nav-right {
@@ -96,7 +101,7 @@ nav {
 	display: none;
 	width: 40px;
 	height: 40px;
-	border: 1px solid rgba(201, 168, 76, 0.4);
+	border: 1px solid rgba(217, 165, 63, 0.4);
 	background: transparent;
 	border-radius: 2px;
 	padding: 0.6rem 0.5rem;
@@ -109,7 +114,7 @@ nav {
 }
 
 .nav-toggle:hover {
-	background: rgba(201, 168, 76, 0.1);
+	background: rgba(217, 165, 63, 0.1);
 }
 
 .nav-toggle span {
@@ -199,7 +204,7 @@ nav {
 	min-width: 200px;
 	list-style: none;
 	background: var(--navy);
-	border: 1px solid rgba(201, 168, 76, 0.25);
+	border: 1px solid rgba(217, 165, 63, 0.25);
 	padding: 0.4rem 0;
 	opacity: 0;
 	visibility: hidden;
@@ -232,7 +237,7 @@ nav {
 
 .nav-dropdown-menu a:hover {
 	color: var(--gold-light);
-	background: rgba(201, 168, 76, 0.08);
+	background: rgba(217, 165, 63, 0.08);
 }
 
 /* ─── PAGE HEADER (non-Home pages) ─── */
@@ -251,8 +256,8 @@ nav {
 	inset: 0;
 	background: linear-gradient(
 		180deg,
-		rgba(13, 27, 42, 0.55) 0%,
-		rgba(13, 27, 42, 0.85) 100%
+		rgba(22, 50, 79, 0.55) 0%,
+		rgba(22, 50, 79, 0.85) 100%
 	);
 }
 
@@ -267,9 +272,9 @@ nav {
 }
 
 .page-header-title {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: clamp(2.75rem, 5.5vw, 4.5rem);
-	font-weight: 300;
+	font-weight: 400;
 	color: var(--white);
 	line-height: 1.1;
 }
@@ -312,8 +317,8 @@ nav {
 	inset: 0;
 	background: linear-gradient(
 		180deg,
-		rgba(13, 27, 42, 0.35) 0%,
-		rgba(13, 27, 42, 0.88) 100%
+		rgba(22, 50, 79, 0.35) 0%,
+		rgba(22, 50, 79, 0.88) 100%
 	);
 }
 
@@ -329,7 +334,6 @@ nav {
 	font-size: 0.8rem;
 	font-weight: 500;
 	letter-spacing: 0.12em;
-	text-transform: uppercase;
 	color: var(--cream-dark);
 }
 
@@ -347,7 +351,7 @@ nav {
 }
 
 .hero-slide-title {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: clamp(1.8rem, 4vw, 2.75rem);
 	font-weight: 500;
 	color: var(--white);
@@ -356,7 +360,7 @@ nav {
 
 .hero-slide-desc {
 	font-size: 1.1rem;
-	font-weight: 300;
+	font-weight: 400;
 	color: rgba(255, 255, 255, 0.75);
 	max-width: 750px;
 	line-height: 1.6;
@@ -371,7 +375,7 @@ nav {
 	height: 40px;
 	border-radius: 50%;
 	border: 1px solid rgba(255, 255, 255, 0.3);
-	background: rgba(13, 27, 42, 0.4);
+	background: rgba(22, 50, 79, 0.4);
 	color: var(--white);
 	font-size: 1.3rem;
 	line-height: 1;
@@ -386,7 +390,7 @@ nav {
 
 .hero-arrow:hover {
 	border-color: var(--gold);
-	background: rgba(13, 27, 42, 0.65);
+	background: rgba(22, 50, 79, 0.65);
 }
 
 .hero-arrow.prev {
@@ -446,9 +450,9 @@ nav {
 }
 
 .btn-primary.is-disabled {
-	background: rgba(201, 168, 76, 0.3);
-	border-color: rgba(201, 168, 76, 0.3);
-	color: rgba(13, 27, 42, 0.55);
+	background: rgba(217, 165, 63, 0.3);
+	border-color: rgba(217, 165, 63, 0.3);
+	color: rgba(22, 50, 79, 0.55);
 	cursor: not-allowed;
 	pointer-events: none;
 }
@@ -517,7 +521,7 @@ section {
 }
 
 .section-title {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: clamp(2rem, 4vw, 3rem);
 	font-weight: 500;
 	line-height: 1.15;
@@ -551,8 +555,8 @@ section {
 }
 
 .status-pill {
-	background: rgba(201, 168, 76, 0.15);
-	border: 1px solid rgba(201, 168, 76, 0.4);
+	background: rgba(217, 165, 63, 0.15);
+	border: 1px solid rgba(217, 165, 63, 0.4);
 	color: var(--gold-light);
 	font-size: 0.72rem;
 	font-weight: 500;
@@ -567,7 +571,7 @@ section {
 .status-text {
 	color: rgba(255, 255, 255, 0.55);
 	font-size: 0.88rem;
-	font-weight: 300;
+	font-weight: 400;
 	line-height: 1.5;
 }
 
@@ -626,7 +630,7 @@ section {
 }
 
 .join-card-date {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: 1.6rem;
 	font-weight: 500;
 	color: var(--navy);
@@ -647,7 +651,7 @@ section {
 	color: var(--text-mid);
 	line-height: var(--body-copy-line);
 	margin-bottom: 1.25rem;
-	font-weight: 300;
+	font-weight: 400;
 }
 
 .about-body p strong {
@@ -656,7 +660,7 @@ section {
 
 .about-body p:first-of-type {
 	font-size: var(--body-copy-size);
-	font-family: "DM Sans", sans-serif;
+	font-family: "Quicksand", sans-serif;
 	font-weight: 500;
 	color: var(--navy);
 	line-height: var(--body-copy-line);
@@ -672,7 +676,7 @@ section {
 }
 
 .mission-statement {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: clamp(1.4rem, 2.5vw, 1.75rem);
 	font-style: italic;
 	font-weight: 400;
@@ -684,7 +688,7 @@ section {
 
 .mission-sub {
 	font-size: var(--body-copy-size);
-	font-weight: 300;
+	font-weight: 400;
 	color: var(--text-mid);
 	line-height: var(--body-copy-line);
 }
@@ -699,7 +703,7 @@ section {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 1.5px;
-	background: rgba(201, 168, 76, 0.15);
+	background: rgba(217, 165, 63, 0.15);
 }
 
 .focus-item {
@@ -721,7 +725,7 @@ section {
 .focus-item-desc {
 	font-size: var(--body-copy-size);
 	color: rgba(255, 255, 255, 0.6);
-	font-weight: 300;
+	font-weight: 400;
 	line-height: var(--body-copy-line);
 }
 
@@ -783,7 +787,7 @@ section {
 	margin: 0 auto 2rem;
 	color: rgba(255, 255, 255, 0.6);
 	font-size: var(--body-copy-size);
-	font-weight: 300;
+	font-weight: 400;
 	line-height: var(--body-copy-line);
 }
 
@@ -805,7 +809,7 @@ section {
 .programs-intro {
 	color: rgba(255, 255, 255, 0.5);
 	font-size: var(--body-copy-size);
-	font-weight: 300;
+	font-weight: 400;
 	max-width: 360px;
 	line-height: var(--body-copy-line);
 }
@@ -814,7 +818,7 @@ section {
 	display: flex;
 	flex-direction: column;
 	gap: 1.5px;
-	background: rgba(201, 168, 76, 0.15);
+	background: rgba(217, 165, 63, 0.15);
 }
 
 .program-anchor {
@@ -849,11 +853,11 @@ section {
 	font-weight: 500;
 	letter-spacing: 0.14em;
 	text-transform: uppercase;
-	color: rgba(201, 168, 76, 0.55);
+	color: rgba(217, 165, 63, 0.55);
 }
 
 .program-date-value {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: 1.7rem;
 	font-weight: 500;
 	color: var(--gold-light);
@@ -874,7 +878,7 @@ section {
 }
 
 .program-title {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: 1.6rem;
 	font-weight: 500;
 	color: var(--white);
@@ -885,7 +889,7 @@ section {
 	font-size: var(--body-copy-size);
 	color: rgba(255, 255, 255, 0.5);
 	line-height: var(--body-copy-line);
-	font-weight: 300;
+	font-weight: 400;
 }
 
 .program-more {
@@ -916,7 +920,7 @@ section {
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	color: var(--gold);
-	border: 1px solid rgba(201, 168, 76, 0.3);
+	border: 1px solid rgba(217, 165, 63, 0.3);
 	padding: 0.25rem 0.65rem;
 	border-radius: 2px;
 	white-space: nowrap;
@@ -947,7 +951,7 @@ section {
 	margin-top: 1rem;
 	font-size: var(--body-copy-size);
 	color: var(--text-mid);
-	font-weight: 300;
+	font-weight: 400;
 	line-height: var(--body-copy-line);
 }
 
@@ -982,7 +986,7 @@ section {
 }
 
 .form-field input {
-	font-family: "DM Sans", sans-serif;
+	font-family: "Quicksand", sans-serif;
 	font-size: 0.92rem;
 	color: var(--text-dark);
 	background: var(--cream);
@@ -1055,7 +1059,7 @@ section {
 	border-radius: 50%;
 	background: var(--gold);
 	color: var(--navy);
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: 2.1rem;
 	font-weight: 600;
 	display: flex;
@@ -1065,7 +1069,7 @@ section {
 }
 
 .step-title {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: 1.3rem;
 	font-weight: 500;
 	color: var(--navy);
@@ -1075,7 +1079,7 @@ section {
 .step-desc {
 	font-size: var(--body-copy-size);
 	color: var(--text-mid);
-	font-weight: 300;
+	font-weight: 400;
 	line-height: var(--body-copy-line);
 	max-width: 260px;
 	margin: 0 auto;
@@ -1103,7 +1107,7 @@ section {
 	margin-bottom: 2.5rem;
 	color: rgba(255, 255, 255, 0.6);
 	font-size: var(--body-copy-size);
-	font-weight: 300;
+	font-weight: 400;
 	max-width: 640px;
 	line-height: var(--body-copy-line);
 }
@@ -1111,7 +1115,7 @@ section {
 .judging-note {
 	margin-top: 2.5rem;
 	padding-top: 1.75rem;
-	border-top: 1px solid rgba(201, 168, 76, 0.25);
+	border-top: 1px solid rgba(217, 165, 63, 0.25);
 	font-size: 1.2rem;
 	font-weight: 400;
 	color: var(--gold-light);
@@ -1169,7 +1173,7 @@ section {
 .stat-desc {
 	font-size: var(--body-copy-size);
 	color: var(--text-mid);
-	font-weight: 300;
+	font-weight: 400;
 	line-height: var(--body-copy-line);
 }
 
@@ -1192,7 +1196,7 @@ section {
 	font-size: var(--body-copy-size);
 	color: var(--text-mid);
 	max-width: 540px;
-	font-weight: 300;
+	font-weight: 400;
 	line-height: var(--body-copy-line);
 }
 
@@ -1223,7 +1227,7 @@ section {
 }
 
 .discord-widget-title {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: 1.8rem;
 	font-weight: 500;
 	color: var(--navy);
@@ -1233,7 +1237,7 @@ section {
 .discord-widget-desc {
 	font-size: var(--body-copy-size);
 	color: var(--text-mid);
-	font-weight: 300;
+	font-weight: 400;
 	line-height: var(--body-copy-line);
 }
 
@@ -1276,7 +1280,7 @@ section {
 }
 
 .involved-card-title {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: 1.3rem;
 	font-weight: 500;
 	color: var(--navy);
@@ -1286,7 +1290,7 @@ section {
 .involved-card-desc {
 	font-size: var(--body-copy-size);
 	color: var(--text-mid);
-	font-weight: 300;
+	font-weight: 400;
 	line-height: var(--body-copy-line);
 	margin-bottom: 1.75rem;
 }
@@ -1305,7 +1309,7 @@ section {
 	display: flex;
 	gap: 0.5rem;
 	align-items: flex-start;
-	font-weight: 300;
+	font-weight: 400;
 }
 
 .involved-bullets li::before {
@@ -1381,7 +1385,7 @@ section {
 	margin-top: 0.5rem;
 	font-size: var(--body-copy-size);
 	color: var(--text-mid);
-	font-weight: 300;
+	font-weight: 400;
 	max-width: 500px;
 	line-height: var(--body-copy-line);
 	margin-bottom: 3.5rem;
@@ -1445,7 +1449,7 @@ section {
 }
 
 .team-name {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: 1.5rem;
 	font-weight: 500;
 	color: var(--navy);
@@ -1464,7 +1468,7 @@ section {
 .team-bio {
 	font-size: var(--body-copy-size);
 	color: var(--text-mid);
-	font-weight: 300;
+	font-weight: 400;
 	line-height: var(--body-copy-line);
 }
 
@@ -1481,7 +1485,7 @@ section {
 }
 
 .faq-q {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: 1.15rem;
 	font-weight: 500;
 	color: var(--navy);
@@ -1492,14 +1496,14 @@ section {
 .faq-a {
 	font-size: var(--body-copy-size);
 	color: var(--text-mid);
-	font-weight: 300;
+	font-weight: 400;
 	line-height: var(--body-copy-line);
 }
 
 /* ─── FOOTER ─── */
 footer {
 	background: var(--navy);
-	border-top: 1px solid rgba(201, 168, 76, 0.12);
+	border-top: 1px solid rgba(217, 165, 63, 0.12);
 	padding: 3rem 2rem;
 }
 
@@ -1514,21 +1518,17 @@ footer {
 }
 
 .footer-logo {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: 1.2rem;
 	font-weight: 500;
 	color: var(--white);
 	letter-spacing: 0.04em;
 }
 
-.footer-logo span {
-	color: var(--gold);
-}
-
 .footer-tagline {
 	font-size: 0.78rem;
-	color: rgba(255, 255, 255, 0.3);
-	font-weight: 300;
+	color: var(--text-light);
+	font-weight: 400;
 	margin-top: 0.3rem;
 }
 
@@ -1555,7 +1555,7 @@ footer {
 .footer-copy {
 	font-size: 0.72rem;
 	color: rgba(255, 255, 255, 0.2);
-	font-weight: 300;
+	font-weight: 400;
 }
 
 /* ─── DIVIDER ─── */
@@ -1569,7 +1569,7 @@ footer {
 /* ─── IMAGE PLACEHOLDER UTILITY ─── */
 .img-placeholder {
 	background: var(--cream-dark);
-	border: 1px dashed rgba(13, 27, 42, 0.2);
+	border: 1px dashed rgba(22, 50, 79, 0.2);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -1629,7 +1629,7 @@ footer {
 		max-height: 0;
 		overflow: hidden;
 		background: var(--navy);
-		border-top: 1px solid rgba(201, 168, 76, 0.2);
+		border-top: 1px solid rgba(217, 165, 63, 0.2);
 		transition: max-height 0.25s ease;
 	}
 	nav.nav-open .nav-mobile-panel {
@@ -1898,7 +1898,7 @@ footer {
 	font-size: 0.78rem;
 	color: var(--text-muted);
 	margin-top: 0.25rem;
-	font-weight: 300;
+	font-weight: 400;
 }
 
 .leaderboard-rp {
@@ -1922,7 +1922,7 @@ footer {
 }
 
 .rp-unit {
-	font-family: "DM Sans", sans-serif;
+	font-family: "Quicksand", sans-serif;
 	font-size: 0.62rem;
 	color: var(--text-muted);
 	font-weight: 500;
@@ -2037,7 +2037,7 @@ footer {
 }
 
 .team-feature-name {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: clamp(1.7rem, 2.6vw, 2.1rem);
 	font-weight: 500;
 	color: var(--navy);
@@ -2047,7 +2047,7 @@ footer {
 .team-feature-bio {
 	font-size: var(--body-copy-size);
 	color: var(--text-mid);
-	font-weight: 300;
+	font-weight: 400;
 	line-height: var(--body-copy-line);
 	margin-bottom: 1.6rem;
 	max-width: 560px;
@@ -2167,7 +2167,7 @@ footer {
 }
 
 .leaderboard-empty p:first-child {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: 1.4rem;
 	color: var(--navy);
 	margin-bottom: 0.5rem;
@@ -2175,7 +2175,7 @@ footer {
 
 .leaderboard-empty p:last-child {
 	font-size: 0.9rem;
-	font-weight: 300;
+	font-weight: 400;
 	max-width: 420px;
 	margin: 0 auto;
 	line-height: 1.6;
@@ -2184,7 +2184,7 @@ footer {
 .mini-leaderboard-empty {
 	font-size: var(--body-copy-size);
 	color: var(--text-muted);
-	font-weight: 300;
+	font-weight: 400;
 	line-height: var(--body-copy-line);
 }
 
@@ -2204,7 +2204,7 @@ footer {
 	position: absolute;
 	top: -4.2rem;
 	left: -2rem;
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: 11rem;
 	line-height: 1;
 	color: var(--gold);
@@ -2220,7 +2220,7 @@ footer {
 }
 
 .statement-title {
-	font-family: "Cormorant Garamond", serif;
+	font-family: "Baloo 2", sans-serif;
 	font-size: clamp(2.2rem, 5vw, 3.6rem);
 	font-weight: 400;
 	line-height: 1.2;
