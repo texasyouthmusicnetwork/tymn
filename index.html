@@ -13,7 +13,10 @@
 			property="og:description"
 			content="Texas Youth Music Network (TYMN) connects young musicians across Texas with competitions, ensembles, and community beyond what school programs offer. The 2026 Fall Kickoff Challenge is open now."
 		/>
-		<meta property="og:image" content="/assets/orch1.jpg" />
+		<meta property="og:image" content="/assets/og-card.png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:image" content="/assets/og-card.png" />
 		<meta name="twitter:card" content="summary_large_image" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,7 +24,7 @@
 			href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Oswald:wght@500;600;700&display=swap"
 			rel="stylesheet"
 		/>
-		<link rel="stylesheet" href="/style.css?v=12" />
+		<link rel="stylesheet" href="/style.css?v=13" />
 	</head>
 
 	<body>
@@ -59,32 +62,42 @@
 		<!-- ─────────── INTRO ─────────── -->
 		<section id="intro">
 			<div class="section-inner">
-				<div class="statement-block">
-					<span class="section-label">Our Mission</span>
-					<h2 class="statement-title">
-						There's more to music than
-						<span class="accent">what's on the sheet</span>.
-					</h2>
+				<div class="about-grid">
+					<div>
+						<div class="statement-block">
+							<span class="section-label">Our Mission</span>
+							<h2 class="statement-title">
+								There's more to music than
+								<span class="accent">what's on the sheet</span>.
+							</h2>
+						</div>
+						<p class="intro-text">
+							Texas Youth Music Network was founded to solve a
+							recurring problem in music education:
+							<span>
+								for a lot of school music programs, playing an
+								instrument means performing whatever the
+								teacher assigns — with no competitions, no
+								awards, no ensemble playing, and no real chance
+								to connect with other musicians.
+							</span>
+							<br /><br /><strong>
+								TYMN gives young musicians across Texas real
+								chances to compete, perform together, and
+								connect with a community of other musicians —
+								not just play what's already on the
+								stand.</strong
+							>
+						</p>
+						<a href="/about/" class="card-btn"
+							>Learn more about our mission →</a
+						>
+					</div>
+
+					<div class="about-emblem">
+						<img src="/assets/logo-emblem.png" alt="TYMN" />
+					</div>
 				</div>
-				<p class="intro-text">
-					Texas Youth Music Network was founded to solve a recurring
-					problem in music education:
-					<span>
-						for a lot of school music programs, playing an
-						instrument means performing whatever the teacher assigns
-						— with no competitions, no awards, no ensemble playing,
-						and no real chance to connect with other musicians.
-					</span>
-					<br /><br /><strong>
-						TYMN gives young musicians across Texas real chances to
-						compete, perform together, and connect with a community
-						of other musicians — not just play what's already on the
-						stand.</strong
-					>
-				</p>
-				<a href="/about/" class="card-btn"
-					>Learn more about our mission →</a
-				>
 			</div>
 		</section>
 
@@ -192,7 +205,7 @@
 
 		<div id="site-footer"></div>
 
-		<script src="/include.js?v=9"></script>
+		<script src="/include.js?v=10"></script>
 		<script src="/script.js?v=9"></script>
 	</body>
 </html>
