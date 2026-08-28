@@ -189,10 +189,12 @@ async function initLeaderboard() {
 
 document.addEventListener("DOMContentLoaded", initLeaderboard);
 
-// Entry form doesn't open until the challenge officially starts.
-// Disables every ".js-entry-link" button until that date, then leaves
-// them alone (the real Google Form link) from then on.
-const ENTRY_OPEN_DATE = new Date(2026, 8, 1); // September 1, 2026
+// Entries opened early (before the official Sept 1-30 season) so
+// students have something to do right away; the leaderboard and the
+// "official" challenge dates are still September 1-30. Kept as a
+// reusable date gate in case a future season needs a staged opening
+// again -- ENTRY_OPEN_DATE just needs to be set in the past to disable it.
+const ENTRY_OPEN_DATE = new Date(2026, 7, 28); // opened early, Aug 28 2026
 
 function gateEntryLinks() {
 	if (new Date() >= ENTRY_OPEN_DATE) return;
