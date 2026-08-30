@@ -2041,7 +2041,8 @@ footer {
 	font-weight: 500;
 	letter-spacing: 0.16em;
 	text-transform: uppercase;
-	color: var(--gold);
+	font-style: italic;
+	color: var(--navy);
 	margin-bottom: 0.6rem;
 }
 
@@ -2050,7 +2051,7 @@ footer {
 	display: inline-block;
 	width: 22px;
 	height: 1px;
-	background: var(--gold);
+	background: var(--navy);
 	flex-shrink: 0;
 }
 
