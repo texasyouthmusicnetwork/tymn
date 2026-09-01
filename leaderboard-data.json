@@ -1,12 +1,12 @@
 [
 	{
-		"school": "Liberal Arts and Sciences Academy",
+		"school": "Liberal Arts and Science Academy",
 		"city": "Austin",
 		"status": "verified",
-		"rp": 400,
-		"rpLastWeek": 400,
-		"submissions": 2,
-		"uniqueInstruments": 2,
+		"rp": 550,
+		"rpLastWeek": null,
+		"submissions": 3,
+		"uniqueInstruments": 3,
 		"outstandingPerformers": 0
 	}
 ]
