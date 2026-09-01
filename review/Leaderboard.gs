@@ -225,20 +225,38 @@ function buildLeaderboardData() {
       weeks * cfg.rpConsistency +
       milestoneRp);
     const display = info.name || name;
+    // Snapshot key = the school's permanent ID from the Schools tab, so renaming
+    // a school keeps its rpLastWeek history. Falls back to the name for schools
+    // with no ID yet, and reads legacy name-keyed snapshots so the switchover
+    // doesn't reset everyone to "New".
+    const key = info.id || display;
+    const last =
+      (key in snapshot) ? snapshot[key] :
+      (display in snapshot) ? snapshot[display] : null;
     return {
       school: display,
       city: info.city || '',
       status: info.status === 'verified' ? 'verified' : 'pending',
       rp: rp,
-      rpLastWeek: (display in snapshot) ? snapshot[display] : null,
+      rpLastWeek: last,
       submissions: a.subs,
       uniqueInstruments: uniqueCats,
       outstandingPerformers: a.outstanding,
+      _key: key, // stripped before the JSON is written
     };
   });
 
   data.sort(function (x, y) { return y.rp - x.rp || x.school.localeCompare(y.school); });
   return { data: data, noSchoolValid: noSchoolValid };
+}
+
+/** The site's JSON must not carry internal fields. */
+function stripInternal_(data) {
+  return data.map(function (s) {
+    const o = {};
+    Object.keys(s).forEach(function (k) { if (k.charAt(0) !== '_') o[k] = s[k]; });
+    return o;
+  });
 }
 
 function weekIndex_(ts, week1Start) {
@@ -254,13 +272,15 @@ function readSchoolsTab_(ss) {
   const sh = ss.getSheetByName(SCHOOLS_SHEET);
   const map = {};
   if (!sh || sh.getLastRow() < 2) return map;
-  sh.getRange(2, 1, sh.getLastRow() - 1, 4).getValues().forEach(function (r) {
+  if (typeof ensureSchoolIds_ === 'function') ensureSchoolIds_(ss); // backfill missing IDs
+  sh.getRange(2, 1, sh.getLastRow() - 1, 6).getValues().forEach(function (r) {
     const name = String(r[0]).trim();
     if (!name) return;
     map[name.toLowerCase()] = {
       name: name,
       city: String(r[1]).replace(/,.*$/, '').trim(),
       status: String(r[3]).trim().toLowerCase(),
+      id: String(r[5]).trim(),
     };
   });
   return map;
@@ -275,7 +295,7 @@ function readSnapshot_() {
 
 function writeSnapshot_(data) {
   const map = {};
-  data.forEach(function (s) { map[s.school] = s.rp; });
+  data.forEach(function (s) { map[s._key || s.school] = s.rp; });
   const props = PropertiesService.getScriptProperties();
   props.setProperty('rpSnapshot', JSON.stringify(map));
   props.setProperty('rpSnapshotISO', new Date().toISOString());
@@ -320,7 +340,7 @@ function publishLeaderboard() {
   const branch = publishBranch_();
   const res = buildLeaderboardData();
   writePreviewTab_(res);
-  const json = JSON.stringify(res.data, null, '\t') + '\n';
+  const json = JSON.stringify(stripInternal_(res.data), null, '\t') + '\n';
   const committed = commitLeaderboardFile_(json);
   const snapped = maybeWeeklySnapshot_(res.data);
   SpreadsheetApp.getActiveSpreadsheet().toast(

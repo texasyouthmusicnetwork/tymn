@@ -65,6 +65,10 @@ rp = min(submissions, cap) × RP-per-valid-submission
 - The Sept 29 snapshot is suppressed by the closing-window guard, so the final
   standings show movement across the whole Sept 22–30 stretch rather than just
   the last two days.
+- Snapshots are keyed by each school's permanent **ID** (column F of the Schools
+  tab, auto-assigned, don't edit), not by its name — so renaming a school keeps
+  its history instead of re-flagging it as "New". Legacy name-keyed snapshots are
+  still read once, so the switchover doesn't reset anyone.
 - To set a baseline immediately instead of waiting for the first Monday:
   **TYMN Review → Snapshot standings now**.
 
