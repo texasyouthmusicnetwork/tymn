@@ -20,19 +20,34 @@
      "outstandingPerformers": 1      // 0 if none yet
    }
 
-   Whether standings are shown publicly is controlled per page by
-   TYMN_LEADERBOARD.visible — see the toggle block at the top of
-   leaderboard/index.html and kickoff/index.html. Unset means visible. */
+   Whether standings are shown publicly is controlled by the single
+   toggle below — it covers every page at once. */
 
-const HIDDEN_MESSAGE_FALLBACK =
-	"Standings are being updated — check back soon.";
+/* ═══════════════════════════════════════════════════════════════════
+   LEADERBOARD VISIBILITY TOGGLE — the only place to flip standings
+   on or off. Applies everywhere: the full leaderboard page and the
+   top-3 mini leaderboard on the kickoff page.
 
-/** Reads the toggle each page declares before loading this script. */
+   visible: true   → standings show normally
+   visible: false  → standings are withheld everywhere. The full
+                     leaderboard page shows hiddenMessage in place of
+                     the table, the kickoff page's mini-leaderboard
+                     card is removed entirely, and leaderboard-data.json
+                     is never fetched, so nothing leaks to the page.
+
+   Commit and push for the change to take effect on the live site.
+   ═══════════════════════════════════════════════════════════════════ */
+const TYMN_LEADERBOARD = {
+	visible: false,
+	hiddenMessage: "Standings are being updated — check back soon.",
+};
+
 function leaderboardVisibility() {
-	const cfg = window.TYMN_LEADERBOARD || {};
 	return {
-		visible: cfg.visible !== false,
-		hiddenMessage: cfg.hiddenMessage || HIDDEN_MESSAGE_FALLBACK,
+		visible: TYMN_LEADERBOARD.visible !== false,
+		hiddenMessage:
+			TYMN_LEADERBOARD.hiddenMessage ||
+			"Standings are being updated — check back soon.",
 	};
 }
 
