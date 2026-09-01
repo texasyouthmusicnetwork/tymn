@@ -1,2 +1,12 @@
-[]
-
+[
+	{
+		"school": "Liberal Arts and Sciences Academy",
+		"city": "Austin",
+		"status": "verified",
+		"rp": 400,
+		"rpLastWeek": 400,
+		"submissions": 2,
+		"uniqueInstruments": 2,
+		"outstandingPerformers": 0
+	}
+]
