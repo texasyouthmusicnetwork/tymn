@@ -105,6 +105,26 @@ function onOpen() {
 	// 		"syncPlaylistFromValidRows",
 	// 	);
 	// }
+
+	// Step 5 items — present only if Leaderboard.gs is in the project.
+	if (typeof publishLeaderboard === "function") {
+		menu.addSeparator()
+			.addItem("Preview leaderboard JSON", "previewLeaderboard")
+			.addItem("Publish leaderboard now", "publishLeaderboard")
+			.addItem(
+				"Snapshot standings now (rpLastWeek)",
+				"snapshotStandingsNow",
+			)
+			.addItem(
+				"(DON'T TOUCH) Set up leaderboard / install daily publish",
+				"ensureLeaderboardSetup",
+			)
+			.addItem(
+				"(DON'T TOUCH) Install daily publish trigger",
+				"installLeaderboardTrigger",
+			);
+	}
+
 	menu.addToUi();
 }
 
@@ -139,7 +159,11 @@ function refreshReviewFormatting() {
 	applyConditionalFormatting_(rs, cols);
 	protectAndFreeze_(rs, cols);
 	ensureNamedRanges_(ss, rs, cols);
-	ss.toast("Formatting, validation, and dashboard ranges refreshed.", "TYMN Review", 5);
+	ss.toast(
+		"Formatting, validation, and dashboard ranges refreshed.",
+		"TYMN Review",
+		5,
+	);
 }
 
 /* ─────────────────── responses sheet lookup ───────────────── */
@@ -498,11 +522,22 @@ function ensureConfigSheet_(ss) {
 			.setFontWeight("bold")
 			.setBackground("#1f3864")
 			.setFontColor("#ffffff");
-		sh.getRange("C2:D6").setValues([
+		sh.getRange("C2:D13").setValues([
 			["RP per valid submission", 100],
-			["RP per unique category (per school)", 25],
-			["RP per Outstanding Performer", 150],
-			["Consistency bonus RP (submissions on 3+ distinct days)", 50],
+			["RP per unique category (per school)", 50],
+			["RP per Outstanding Performer", 400],
+			[
+				"Consistency bonus RP (each week with at least 1 submission, max 4)",
+				100,
+			],
+			["5 submissions milestone", 100],
+			["10 submissions milestone", 100],
+			["20 submissions milestone", 100],
+			["40 submissions milestone", 100],
+			["Max submissions counted for RP (blank = no cap)", ""],
+			["Consistency week 1 starts (YYYY-MM-DD)", "2026-09-01"],
+			["rpLastWeek snapshot weekday", "Tuesday"],
+			["Skip snapshot within N days of close", 3],
 			["Challenge close date", "2026-09-30"],
 		]);
 		sh.setColumnWidths(1, 1, 240);
@@ -521,35 +556,65 @@ function ensureRubricSheet_(ss) {
 	const lines = [
 		["Reviewer cheat-sheet — full version: review/REVIEWER-RUBRIC.md"],
 		[""],
-		["Valid  = a genuine student performance, honestly represented. NOT \"good.\""],
+		[
+			'Valid  = a genuine student performance, honestly represented. NOT "good."',
+		],
 		["Standout = you would feature it on TYMN's site / socials."],
-		["Participation and effort beat talent. A shaky beginner piece is Valid."],
+		[
+			"Participation and effort beat talent. A shaky beginner piece is Valid.",
+		],
 		[""],
 		["VALID? = Yes when ALL hold:"],
 		["  • real performance by the submitter / their named ensemble"],
-		["  • ~1 min+ of actual playing; a complete piece, movement, etude, or big section"],
-		["  • live performance of the person on screen (no pro recordings, reposts, lip-sync)"],
+		[
+			"  • ~1 min+ of actual playing; a complete piece, movement, etude, or big section",
+		],
+		[
+			"  • live performance of the person on screen (no pro recordings, reposts, lip-sync)",
+		],
 		["  • you can see & hear them play"],
-		["VALID? = No:  not music / not the submitter / too short / duplicate / faked"],
-		["VALID? = Needs 2nd look:  borderline length or effort, unsure it's them, maybe-duplicate"],
+		[
+			"VALID? = No:  not music / not the submitter / too short / duplicate / faked",
+		],
+		[
+			"VALID? = Needs 2nd look:  borderline length or effort, unsure it's them, maybe-duplicate",
+		],
 		["When unsure → Needs 2nd look. Never guess."],
 		[""],
 		["FARMING (100 RP each):"],
 		["  • same student, different pieces → all valid"],
-		["  • same student, same piece again → first valid, rest No (\"duplicate\")"],
+		[
+			'  • same student, same piece again → first valid, rest No ("duplicate")',
+		],
 		["  • one ensemble video sent by each member → counts ONCE (rest No)"],
-		["  • burst of throwaway clips from one school → each No, tell an organizer"],
+		[
+			"  • burst of throwaway clips from one school → each No, tell an organizer",
+		],
 		[""],
-		["STANDOUT? (Pass 1): nominate generously for any level — polish, musicality,"],
-		["  expression, hard passage handled, or a beginner whose serious work shows."],
-		["STANDOUT CONFIRMED? (Pass 2, a DIFFERENT reviewer): watch the whole video;"],
-		["  Yes only if featured-quality. Spread across categories & schools when close."],
+		[
+			"STANDOUT? (Pass 1): nominate generously for any level — polish, musicality,",
+		],
+		[
+			"  expression, hard passage handled, or a beginner whose serious work shows.",
+		],
+		[
+			"STANDOUT CONFIRMED? (Pass 2, a DIFFERENT reviewer): watch the whole video;",
+		],
+		[
+			"  Yes only if featured-quality. Spread across categories & schools when close.",
+		],
 		["  CHECK the Opt-out/opt-in column before confirming a feature."],
 		[""],
 		["CATEGORIES:"],
-		["  Keyboard: piano, organ, harpsichord   |   Strings: bowed + plucked incl. guitar, harp, uke"],
-		["  Wind: all woodwinds + all brass       |   Percussion: snare, mallets, timpani, drum set"],
-		["  Misc.: voice, non-Western, synth       |   Ensemble: 2+ independent parts"],
+		[
+			"  Keyboard: piano, organ, harpsichord   |   Strings: bowed + plucked incl. guitar, harp, uke",
+		],
+		[
+			"  Wind: all woodwinds + all brass       |   Percussion: snare, mallets, timpani, drum set",
+		],
+		[
+			"  Misc.: voice, non-Western, synth       |   Ensemble: 2+ independent parts",
+		],
 		["  Soloist + accompanist = SOLO in the soloist's category."],
 		["  Wrong category → fix it, don't reject."],
 	];
@@ -573,7 +638,10 @@ function ensureNamedRanges_(ss, rs, cols) {
 	const h = headerMap_(rs);
 	const put = function (name, col) {
 		if (!col) return;
-		ss.setNamedRange("tymn_" + name, rs.getRange(colLetter_(col) + "2:" + colLetter_(col)));
+		ss.setNamedRange(
+			"tymn_" + name,
+			rs.getRange(colLetter_(col) + "2:" + colLetter_(col)),
+		);
 	};
 	put("ts", 1);
 	put("reviewer", cols.reviewer);
@@ -582,10 +650,12 @@ function ensureNamedRanges_(ss, rs, cols) {
 	put("valid", cols.valid);
 	put("standout", cols.standout);
 	put("confirm", cols.confirm);
-	put("name",
+	put(
+		"name",
 		findCol_(h, "full name", { exclude: "school" }) ||
-		findCol_(h, "first and last") ||
-		findCol_(h, "name", { exclude: "canonical" }));
+			findCol_(h, "first and last") ||
+			findCol_(h, "name", { exclude: "canonical" }),
+	);
 	put("category", findCol_(h, "category"));
 	put("title", findCol_(h, "title"));
 	put("video", findCol_(h, "submission video") || findCol_(h, "video"));
@@ -602,13 +672,19 @@ function buildDashboard_(ss, rs, cols) {
 		["TYMN Fall Kickoff — review dashboard", ""],
 		["", ""],
 		["Submissions received", "=COUNTA(tymn_ts)"],
-		["Reviewed (Yes or No)", '=COUNTIF(tymn_valid,"Yes")+COUNTIF(tymn_valid,"No")'],
+		[
+			"Reviewed (Yes or No)",
+			'=COUNTIF(tymn_valid,"Yes")+COUNTIF(tymn_valid,"No")',
+		],
 		["Needs 2nd look", '=COUNTIF(tymn_valid,"Needs 2nd look")'],
 		["Pending (not yet triaged)", "=B3-B4-B5"],
 		["", ""],
 		["Valid submissions", '=COUNTIF(tymn_valid,"Yes")'],
 		["Bad / re-request links", '=COUNTIF(tymn_link,"No*")'],
-		["Valid but unmapped to a school", '=COUNTIFS(tymn_valid,"Yes",tymn_school,"")'],
+		[
+			"Valid but unmapped to a school",
+			'=COUNTIFS(tymn_valid,"Yes",tymn_school,"")',
+		],
 		["", ""],
 		["Standouts nominated", "=COUNTIF(tymn_standout,TRUE)"],
 		["Standouts confirmed", '=COUNTIF(tymn_confirm,"Yes")'],
@@ -619,7 +695,10 @@ function buildDashboard_(ss, rs, cols) {
 
 	// per-reviewer table driven by Config reviewer list
 	sh.getRange("A16").setFormula(
-		"=IFERROR(FILTER(" + CONFIG_SHEET + "!A2:A, " + CONFIG_SHEET +
+		"=IFERROR(FILTER(" +
+			CONFIG_SHEET +
+			"!A2:A, " +
+			CONFIG_SHEET +
 			'!A2:A<>""), "(add reviewers in Config)")',
 	);
 	sh.getRange("B16").setFormula(
@@ -632,7 +711,7 @@ function buildDashboard_(ss, rs, cols) {
 	sh.getRange("D2").setValue("School").setFontWeight("bold");
 	sh.getRange("E2").setValue("Valid submissions").setFontWeight("bold");
 	sh.getRange("D3").setFormula(
-		'=IFERROR(QUERY({tymn_school,tymn_valid},' +
+		"=IFERROR(QUERY({tymn_school,tymn_valid}," +
 			"\"select Col1, count(Col2) where Col2 = 'Yes' and Col1 is not null and Col1 <> '' " +
 			'group by Col1 order by count(Col2) desc label count(Col2) \'\'",0),"(no valid submissions yet)")',
 	);
