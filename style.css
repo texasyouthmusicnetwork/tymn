@@ -283,6 +283,48 @@ nav {
 	color: var(--gold);
 }
 
+/* Poster variant of the page header: used on the Kickoff and Leaderboard
+   pages, where the event poster supplies the banner instead of the stock
+   orchestra photo. The poster is a tall, text-heavy portrait flyer, so a
+   wide banner can only ever show a horizontal band of it — and any band
+   with the poster's own lettering in it collides with the page title
+   sitting on top. Blurring it keeps the poster's navy-and-gold palette
+   and doodle shapes as banner texture while the title stays legible.
+   ::before carries the blurred art, ::after the darkening gradient. */
+.page-header.has-poster {
+	background-image: none;
+	background-color: var(--navy);
+	min-height: 320px;
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+}
+
+.page-header.has-poster::before {
+	background-image: url("assets/TYMNposter.jpg");
+	background-size: cover;
+	background-position: center 22%;
+	filter: blur(22px) brightness(0.6) saturate(1.25);
+	/* scaled up so the blur doesn't feather in from the banner edges */
+	transform: scale(1.18);
+}
+
+.page-header.has-poster::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background: linear-gradient(
+		180deg,
+		rgba(13, 27, 42, 0.3) 0%,
+		rgba(13, 27, 42, 0.72) 100%
+	);
+}
+
+.page-header.has-poster .section-inner {
+	width: 100%;
+}
+
 /* ─── HERO ─── */
 #hero {
 	background: var(--navy);
@@ -883,6 +925,15 @@ section {
 	font-weight: 500;
 	color: var(--gold-light);
 	line-height: 1.15;
+}
+
+.program-poster {
+	flex: 0 0 auto;
+	width: 104px;
+	height: auto;
+	display: block;
+	border: 1px solid var(--border-gold);
+	border-radius: 3px;
 }
 
 .program-card-body {
@@ -1747,6 +1798,9 @@ footer {
 	.hero-slide-content {
 		padding-bottom: 2.4rem;
 	}
+	.program-poster {
+		width: 84px;
+	}
 	.program-card {
 		padding: 1.5rem;
 	}
@@ -1783,6 +1837,9 @@ footer {
 @media (max-width: 600px) {
 	.page-header {
 		padding-top: 88px;
+	}
+	.page-header.has-poster {
+		min-height: 220px;
 	}
 	.nav-logo img {
 		height: 28px;

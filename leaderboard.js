@@ -12,6 +12,9 @@
    {
      "school": "Example High School",
      "city": "Austin",
+     "state": "TX",                  // 2-letter code; optional, but
+                                     // worth setting now that the
+                                     // challenge is open nationally
      "status": "verified",           // or "pending"
      "rp": 1350,
      "rpLastWeek": 1000,             // null for a brand-new school
@@ -127,13 +130,15 @@ function renderRow(s, { showExtra }) {
 	const uniqueInstruments = s.uniqueInstruments ?? 0;
 	const outstandingPerformers = s.outstandingPerformers ?? 0;
 
+	const location = s.state ? `${s.city}, ${s.state}` : s.city;
+
 	const meta = showExtra
-		? `${s.city} · ${submissions} submission${submissions === 1 ? "" : "s"} · ${uniqueInstruments} instrument${uniqueInstruments === 1 ? "" : "s"}${
+		? `${location} · ${submissions} submission${submissions === 1 ? "" : "s"} · ${uniqueInstruments} instrument${uniqueInstruments === 1 ? "" : "s"}${
 				outstandingPerformers
 					? ` · ${outstandingPerformers} Outstanding Performer${outstandingPerformers > 1 ? "s" : ""}`
 					: ""
 			}`
-		: s.city;
+		: location;
 
 	return `
 		<div class="leaderboard-row${topClass}">
