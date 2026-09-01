@@ -65,7 +65,10 @@
 		</section>
 
 		<!-- ─────────── SUMMARY STATS ─────────── -->
-		<section id="leaderboard-summary">
+		<!-- data-hide-when-leaderboard-hidden: leaderboard.js removes this whole
+		     section when leaderboard-data.json has "visible": false, so the
+		     heading doesn't sit above an empty grid. -->
+		<section id="leaderboard-summary" data-hide-when-leaderboard-hidden>
 			<div class="section-inner">
 				<h2 class="section-title light">By the numbers</h2>
 				<div class="stat-grid" id="leaderboardSummary"></div>
@@ -102,7 +105,27 @@
 
 		<div id="site-footer"></div>
 
+		<!-- ═══════════════════════════════════════════════════════════════
+		     LEADERBOARD VISIBILITY TOGGLE
+
+		     visible: true   → standings show normally
+		     visible: false  → standings are withheld; the page shows
+		                       hiddenMessage instead, and the "By the numbers"
+		                       section is removed. The standings file isn't even
+		                       fetched, so nothing leaks to the page.
+
+		     Commit and push for the change to take effect on the live site.
+		     kickoff/index.html has its own copy of this block for the top-3
+		     mini leaderboard — change both to hide standings everywhere.
+		     ═══════════════════════════════════════════════════════════════ -->
+		<script>
+			window.TYMN_LEADERBOARD = {
+				visible: false,
+				hiddenMessage: "Standings are being updated — check back soon.",
+			};
+		</script>
+
 		<script src="/include.js?v=12"></script>
-		<script src="/leaderboard.js?v=10"></script>
+		<script src="/leaderboard.js?v=11"></script>
 	</body>
 </html>

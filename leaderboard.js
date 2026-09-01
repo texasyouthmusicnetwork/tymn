@@ -18,7 +18,23 @@
      "submissions": 4,
      "uniqueInstruments": 3,
      "outstandingPerformers": 1      // 0 if none yet
-   } */
+   }
+
+   Whether standings are shown publicly is controlled per page by
+   TYMN_LEADERBOARD.visible — see the toggle block at the top of
+   leaderboard/index.html and kickoff/index.html. Unset means visible. */
+
+const HIDDEN_MESSAGE_FALLBACK =
+	"Standings are being updated — check back soon.";
+
+/** Reads the toggle each page declares before loading this script. */
+function leaderboardVisibility() {
+	const cfg = window.TYMN_LEADERBOARD || {};
+	return {
+		visible: cfg.visible !== false,
+		hiddenMessage: cfg.hiddenMessage || HIDDEN_MESSAGE_FALLBACK,
+	};
+}
 
 async function loadStandings() {
 	const res = await fetch("/leaderboard-data.json");
@@ -155,12 +171,40 @@ function renderSummary(standings) {
 	`;
 }
 
+function escapeHTML(s) {
+	return String(s)
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;");
+}
+
 async function initLeaderboard() {
 	const miniEl = document.getElementById("miniLeaderboard");
 	const fullEl = document.getElementById("leaderboardFull");
 	const summaryEl = document.getElementById("leaderboardSummary");
 
 	if (!miniEl && !fullEl) return;
+
+	// Standings withheld: show a short note in place of the tables and stats,
+	// and hide any section marked data-hide-when-leaderboard-hidden. Checked
+	// before the fetch, so hidden standings never reach the page.
+	const { visible, hiddenMessage } = leaderboardVisibility();
+	if (!visible) {
+		const msg = escapeHTML(hiddenMessage);
+		if (miniEl) {
+			miniEl.innerHTML = `<p class="mini-leaderboard-empty">${msg}</p>`;
+		}
+		if (fullEl) {
+			fullEl.innerHTML = `<div class="leaderboard-empty"><p>${msg}</p></div>`;
+		}
+		if (summaryEl) summaryEl.innerHTML = "";
+		document
+			.querySelectorAll("[data-hide-when-leaderboard-hidden]")
+			.forEach((el) => {
+				el.style.display = "none";
+			});
+		return;
+	}
 
 	const standings = await loadStandings();
 

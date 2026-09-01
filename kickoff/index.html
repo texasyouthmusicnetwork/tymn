@@ -447,8 +447,21 @@
 
 		<div id="site-footer"></div>
 
+		<!-- ═══════════════════════════════════════════════════════════════
+		     LEADERBOARD VISIBILITY TOGGLE — controls the top-3 mini
+		     leaderboard on this page. leaderboard/index.html has its own copy
+		     for the full standings; change both to hide standings everywhere.
+		     Commit and push for the change to take effect.
+		     ═══════════════════════════════════════════════════════════════ -->
+		<script>
+			window.TYMN_LEADERBOARD = {
+				visible: true,
+				hiddenMessage: "Standings are being updated — check back soon.",
+			};
+		</script>
+
 		<script src="/include.js?v=12"></script>
 		<script src="/script.js?v=11"></script>
-		<script src="/leaderboard.js?v=10"></script>
+		<script src="/leaderboard.js?v=11"></script>
 	</body>
 </html>
