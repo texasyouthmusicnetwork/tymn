@@ -401,9 +401,103 @@ function commitLeaderboardFile_(newContent) {
     payload: JSON.stringify(payload), muteHttpExceptions: true,
   });
   if (put.getResponseCode() >= 300) {
-    throw new Error('GitHub PUT ' + put.getResponseCode() + ': ' + put.getContentText().slice(0, 300));
+    let hint = '';
+    if (put.getResponseCode() === 403) {
+      hint = '\n\n403 = the token can read this public repo but cannot write to it.' +
+        '\n\nThe repo is owned by the USER account "texasyouthmusicnetwork".' +
+        ' A fine-grained token can only write to repos owned by the account that' +
+        ' created it — a fine-grained token made on a collaborator account can' +
+        ' never write here, no matter what permissions you tick.' +
+        '\n\nFix, easiest first:' +
+        '\n  1. Sign in to GitHub AS texasyouthmusicnetwork and create the' +
+        ' fine-grained token there: Resource owner = texasyouthmusicnetwork,' +
+        ' Only select repositories = tymn, Repository permissions →' +
+        ' Contents = Read and write.' +
+        '\n  2. Or use a CLASSIC token with the "repo" scope, created by any' +
+        ' account that can already push to the repo.' +
+        '\n\nAlso check you did not pick "Public repositories (read-only)" as the' +
+        ' token\'s repository access — that is read-only by definition.' +
+        '\n\nRun  diagnoseGitHubAccess  from the TYMN Review menu for a per-check report.';
+    } else if (put.getResponseCode() === 409 || put.getResponseCode() === 422) {
+      hint = '\n\nBranch "' + branch + '" may be protected, or the file changed since' +
+        ' this run read it. Re-run publish; if it persists, check branch protection rules.';
+    } else if (put.getResponseCode() === 401) {
+      hint = '\n\n401 = token missing, expired, or mistyped in Script Properties.';
+    }
+    throw new Error('GitHub PUT ' + put.getResponseCode() + ': ' +
+      put.getContentText().slice(0, 300) + hint);
   }
   return true;
+}
+
+/**
+ * Menu: report exactly which part of GitHub access works. Read-only — makes no
+ * commit. Run this when publish fails with a 401/403/404.
+ */
+function diagnoseGitHubAccess() {
+  const repo = String(cfgLike_('github repo', 'texasyouthmusicnetwork/tymn')).trim();
+  const branch = publishBranch_();
+  const path = String(cfgLike_('github file path', 'leaderboard-data.json')).trim();
+  const token = PropertiesService.getScriptProperties().getProperty('GITHUB_TOKEN');
+  const out = [];
+
+  if (!token) {
+    SpreadsheetApp.getUi().alert('No GITHUB_TOKEN in Project Settings → Script Properties.');
+    return;
+  }
+  const headers = {
+    Authorization: 'Bearer ' + token,
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+  };
+  const call = function (url) {
+    const r = UrlFetchApp.fetch(url, { headers: headers, muteHttpExceptions: true });
+    let body = {};
+    try { body = JSON.parse(r.getContentText()); } catch (e) {}
+    return { code: r.getResponseCode(), body: body, text: r.getContentText() };
+  };
+
+  out.push('Token: ' + token.slice(0, 4) + '…' + token.slice(-4) +
+    '  (' + (token.indexOf('github_pat_') === 0 ? 'fine-grained'
+           : token.indexOf('ghp_') === 0 ? 'classic' : 'unknown type') + ')');
+  out.push('Repo: ' + repo + '   Branch: ' + branch + '   Path: ' + path);
+  out.push('');
+
+  const who = call('https://api.github.com/user');
+  out.push('1. Identity        ' + (who.code === 200
+    ? 'OK — authenticated as ' + who.body.login
+    : 'FAILED ' + who.code + ' — token invalid or expired'));
+
+  const rep = call('https://api.github.com/repos/' + repo);
+  if (rep.code === 200) {
+    const p = rep.body.permissions || {};
+    out.push('2. Repo visible    OK — ' + rep.body.full_name +
+      '  (default branch: ' + rep.body.default_branch + ')');
+    out.push('3. Write access    ' + (p.push
+      ? 'OK — token reports push access'
+      : 'MISSING — token can read but not push. Set Contents = Read and write,' +
+        ' and have an org owner approve the token.'));
+  } else {
+    out.push('2. Repo visible    FAILED ' + rep.code +
+      ' — token cannot see the repo. Check the Resource owner is the org and that' +
+      ' this repository is selected in the token, then get it approved by an org owner.');
+    out.push('3. Write access    skipped');
+  }
+
+  const br = call('https://api.github.com/repos/' + repo + '/branches/' + encodeURIComponent(branch));
+  out.push('4. Branch exists   ' + (br.code === 200
+    ? 'OK' + (br.body.protected ? ' — but it is PROTECTED; direct commits may be blocked' : '')
+    : 'FAILED ' + br.code + ' — branch "' + branch + '" not found or not visible'));
+
+  const file = call('https://api.github.com/repos/' + repo + '/contents/' +
+    path.split('/').map(encodeURIComponent).join('/') + '?ref=' + encodeURIComponent(branch));
+  out.push('5. Target file     ' + (file.code === 200 ? 'exists — will be updated'
+    : file.code === 404 ? 'not found — will be created'
+    : 'FAILED ' + file.code));
+
+  Logger.log(out.join('\n'));
+  SpreadsheetApp.getUi().alert('GitHub access check', out.join('\n'),
+    SpreadsheetApp.getUi().ButtonSet.OK);
 }
 
 /* ─────────────────── preview tab ───────────────────────────── */

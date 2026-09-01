@@ -91,6 +91,44 @@ The active branch is named in the publish toast and at the bottom of the
 **The daily trigger uses the same setting** — if you leave it on `dev`, the live
 leaderboard stops updating. Switch back to `main` when you're done staging.
 
+## Troubleshooting a failed publish
+
+Run **TYMN Review → Check GitHub access** first. It reports, without committing:
+identity, whether the token can see the repo, whether it has push access,
+whether the branch exists (and is protected), and whether the file is there.
+
+**`PUT 403: Resource not accessible by personal access token`** — the token can
+read the repo (it's public) but cannot write to it.
+
+`texasyouthmusicnetwork/tymn` is owned by the **user account**
+`texasyouthmusicnetwork` — not an organization. That matters, because a
+fine-grained token can only write to repositories **owned by the account that
+created it**. GitHub's "Resource owner" dropdown lists only your own account and
+orgs you belong to — never another user. So a fine-grained token created on a
+*collaborator* account can never write here, regardless of the permissions
+ticked; it just gets public read access, which is exactly this 403.
+
+Fix, easiest first:
+
+1. **Create the token as `texasyouthmusicnetwork`.** Sign in as that account
+   (same identity as `texasyouthmusicnetwork@gmail.com`, which already owns the
+   responses spreadsheet and runs the script), then:
+   Settings → Developer settings → Fine-grained tokens →
+   *Resource owner* = `texasyouthmusicnetwork` ·
+   *Only select repositories* = `tymn` ·
+   *Repository permissions → Contents = Read and write*.
+2. **Or use a classic token** with the `repo` scope, created by any account that
+   can already push to the repo. Works for collaborators too — watch the expiry.
+
+Also make sure the token's repository access isn't set to
+*"Public repositories (read-only)"* — that is read-only by definition and
+produces this same error.
+
+**`PUT 409 / 422`** — the branch is protected, or the file changed mid-run.
+Re-run; if it persists, check branch-protection rules on that branch.
+
+**`401`** — token missing, expired, or mistyped in Script Properties.
+
 ## Notes
 
 - Commits go straight to the configured branch on GitHub via the API — your

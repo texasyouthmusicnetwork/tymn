@@ -85,6 +85,13 @@ function onOpen() {
 		.addItem("Hide irrelevant response columns", "hideIrrelevantColumns")
 		.addItem("Show all response columns", "showAllResponseColumns")
 		.addSeparator()
+		.addItem("Preview leaderboard JSON", "previewLeaderboard")
+		.addItem(
+			"Publish leaderboard now (usually auto-publishes at 6am daily)",
+			"publishLeaderboard",
+		)
+		.addItem("Check GitHub access", "diagnoseGitHubAccess")
+		.addSeparator()
 		.addItem(
 			"(DON'T TOUCH) Set up / repair review sheet",
 			"setupReviewSheet",
@@ -108,13 +115,10 @@ function onOpen() {
 
 	// Step 5 items — present only if Leaderboard.gs is in the project.
 	if (typeof publishLeaderboard === "function") {
-		menu.addSeparator()
-			.addItem("Preview leaderboard JSON", "previewLeaderboard")
-			.addItem("Publish leaderboard now", "publishLeaderboard")
-			.addItem(
-				"Snapshot standings now (rpLastWeek)",
-				"snapshotStandingsNow",
-			)
+		menu.addItem(
+			"(DON'T TOUCH) Snapshot standings now (rpLastWeek)",
+			"snapshotStandingsNow",
+		)
 			.addItem(
 				"(DON'T TOUCH) Set up leaderboard / install daily publish",
 				"ensureLeaderboardSetup",
@@ -428,52 +432,7 @@ function ensureSchoolsSheet_(ss) {
 		sh.setColumnWidths(1, 1, 260);
 		sh.setColumnWidths(5, 1, 320);
 	}
-	ensureSchoolIds_(ss);
 	return sh;
-}
-
-/**
- * Every school gets a permanent ID in column F. The leaderboard's rpLastWeek
- * snapshot is keyed by this ID, not by the school's name — so renaming a school
- * in column A no longer orphans its history and re-flags it as "New".
- * IDs are assigned once and never reused; do not edit them by hand.
- */
-const SCHOOLS_ID_COL = 6; // column F
-
-function ensureSchoolIds_(ss) {
-	const sh = ss.getSheetByName(SCHOOLS_SHEET);
-	if (!sh) return;
-
-	if (String(sh.getRange(1, SCHOOLS_ID_COL).getValue()).trim() === "") {
-		sh.getRange(1, SCHOOLS_ID_COL)
-			.setValue("ID (auto — do not edit)")
-			.setFontWeight("bold")
-			.setBackground("#1f3864")
-			.setFontColor("#ffffff");
-		sh.setColumnWidth(SCHOOLS_ID_COL, 150);
-	}
-
-	const last = sh.getLastRow();
-	if (last < 2) return;
-	const n = last - 1;
-	const names = sh.getRange(2, 1, n, 1).getValues();
-	const ids = sh.getRange(2, SCHOOLS_ID_COL, n, 1).getValues();
-
-	let max = 0;
-	ids.forEach(function (r) {
-		const m = String(r[0]).trim().match(/^sch-(\d+)$/);
-		if (m) max = Math.max(max, parseInt(m[1], 10));
-	});
-
-	let changed = false;
-	for (let i = 0; i < n; i++) {
-		if (String(names[i][0]).trim() && !String(ids[i][0]).trim()) {
-			max++;
-			ids[i][0] = "sch-" + ("00" + max).slice(-3);
-			changed = true;
-		}
-	}
-	if (changed) sh.getRange(2, SCHOOLS_ID_COL, n, 1).setValues(ids);
 }
 
 function addSchoolFromSelectedRow() {
@@ -532,7 +491,6 @@ function addSchoolFromSelectedRow() {
 				? "submitted as: " + rawSchool
 				: "",
 		]);
-		ensureSchoolIds_(ss); // give the new row its permanent ID
 	}
 	const cols = ensureReviewColumns_(rs);
 	rs.getRange(row, cols.school).setValue(name);
