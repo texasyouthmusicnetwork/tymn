@@ -38,10 +38,12 @@ const SETUP = {
   HARDEN_VIDEO_VALIDATION: true,
 };
 
-/* Accepts youtube.com/watch, /live, /shorts, /embed and youtu.be, with or
-   without scheme / www / m., plus any trailing query (?si=, &t=, …). */
+/* Accepts YouTube (watch, /live, /shorts, /embed, youtu.be) and Google Drive
+   file links, with or without scheme / www / m., plus any trailing query.
+   These are the only two hosts the review script can verify. */
 const YT_PATTERN =
-  '(https?://)?(www\\.|m\\.)?(youtube\\.com/(watch\\?v=|live/|shorts/|embed/)|youtu\\.be/)[\\w-]{6,}';
+  '(https?://)?((www\\.|m\\.)?(youtube\\.com/(watch\\?v=|live/|shorts/|embed/)|youtu\\.be/)[\\w-]{6,}' +
+  '|(drive|docs)\\.google\\.com/.*[\\w-]{10,})';
 
 const EMAIL_PATTERN = '^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$';
 
@@ -70,11 +72,11 @@ const HELP_TEXT = {
   'Instrument':
     'Solo: your instrument (e.g. “Violin”).  Ensemble: every performer and their instrument, e.g. “John Doe – Violin, Jane Doe – Piano”.',
   'Submission Video':
-    'Paste a YouTube link (youtube.com or youtu.be). Set the video to Unlisted — NOT Private (reviewers can’t open Private videos). Tip: open your link in a private/incognito window first to confirm it plays.',
+    'YouTube or Google Drive only. YouTube: set the video to Unlisted — NOT Private. Google Drive: share it as “Anyone with the link can view”. Tip: open your link in a private/incognito window first to confirm it plays.',
 };
 
 const VIDEO_VALIDATION_MESSAGE =
-  'That doesn’t look like a YouTube link — use a youtube.com or youtu.be URL.';
+  'Use a YouTube or Google Drive link — those are the only two we can review.';
 const DIRECTOR_EMAIL_VALIDATION_MESSAGE =
   'Please enter a valid email address, or leave this blank.';
 

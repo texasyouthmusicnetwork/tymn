@@ -32,7 +32,7 @@ const LINK_OPTIONS = [
 ];
 
 const STEP3_CONFIG_DEFAULTS = [
-	["Assignment mode (round-robin / by-category)", "round-robin"],
+	["Assignment mode (round-robin / by-category / off)", "round-robin"],
 	["Send confirmation email (yes/no)", "yes"],
 	["Confirmation email from-name", "Texas Youth Music Network"],
 	["Sync valid videos to a YouTube playlist (yes/no)", "no"],
@@ -68,26 +68,28 @@ function ensureStep3Setup() {
 	);
 }
 
+/** Located by header name, so these two can be reordered or moved like the rest. */
 function ensureAutoColumns_(rs) {
 	const headers = headerMap_(rs);
-	let first = headers.indexOf(AUTO_COLUMNS[0].header) + 1;
-	if (!first) {
-		first = rs.getLastColumn() + 1;
-		rs.getRange(1, first, 1, AUTO_COLUMNS.length)
-			.setValues([
-				AUTO_COLUMNS.map(function (c) {
-					return c.header;
-				}),
-			])
+	const map = {};
+	let next = rs.getLastColumn() + 1;
+
+	AUTO_COLUMNS.forEach(function (c) {
+		const i = headers.indexOf(c.header);
+		if (i !== -1) {
+			map[c.key] = i + 1;
+			return;
+		}
+		rs.getRange(1, next)
+			.setValue(c.header)
 			.setBackground("#7f6000")
 			.setFontColor("#ffffff")
 			.setFontWeight("bold");
-		rs.setColumnWidth(first + 1, 380);
-	}
-	const map = {};
-	AUTO_COLUMNS.forEach(function (c, i) {
-		map[c.key] = first + i;
+		map[c.key] = next;
+		next++;
 	});
+
+	if (map.auto) rs.setColumnWidth(map.auto, 380);
 	return map;
 }
 
@@ -132,11 +134,14 @@ function onFormSubmitHandler(e) {
 
 	const rev = reviewColMap_(rs);
 	const auto = ensureAutoColumns_(rs);
+	// A row we've already processed always has an Auto-check note. Don't key this
+	// off the Reviewer cell — with assignment set to "off" that stays blank, and
+	// every student edit would re-run the full pipeline and re-send the
+	// confirmation email.
 	const isEdit =
-		rev.reviewer &&
-		String(rs.getRange(row, rev.reviewer).getValue()).trim() !== "";
+		auto.auto && String(rs.getRange(row, auto.auto).getValue()).trim() !== "";
 
-	const link = checkYouTubeLink_(data.videoUrl);
+	const link = checkVideoLink_(data.videoUrl);
 
 	// ---- edit of an existing submission: light pass only ----
 	if (isEdit) {
@@ -160,9 +165,11 @@ function onFormSubmitHandler(e) {
 
 	if (rev.link) {
 		if (link.state === "ok") rs.getRange(row, rev.link).setValue("Yes");
-		else if (link.state === "missing")
+		else if (link.state === "missing" || link.state === "unsupported")
 			rs.getRange(row, rev.link).setValue("No — dead / wrong link");
-		// private / unknown / notyt → leave blank for a human
+		else if (link.state === "private")
+			rs.getRange(row, rev.link).setValue("No — private");
+		// unknown / empty → leave blank for a human
 	}
 
 	const guess = guessSchool_(data.rawSchool, getSchoolsList_(ss));
@@ -173,9 +180,11 @@ function onFormSubmitHandler(e) {
 	if (reviewer && rev.reviewer)
 		rs.getRange(row, rev.reviewer).setValue(reviewer);
 
-	const dupeRow = findDuplicateVideo_(rs, link.videoId, row, headers);
+	const dupeRow = findDuplicateVideo_(rs, link.fingerprint, row, headers);
 
-	const bits = ["link:" + link.state.toUpperCase()];
+	const bits = [
+		"link:" + link.state.toUpperCase() + (link.host ? " (" + link.host + ")" : ""),
+	];
 	if (!data.rawSchool) bits.push("no school given");
 	else if (guess.confident) bits.push("school→ " + guess.name);
 	else
@@ -189,7 +198,9 @@ function onFormSubmitHandler(e) {
 		);
 	if (dupeRow) bits.push("DUPE video of row " + dupeRow);
 	if (link.state === "private")
-		bits.push("link 401 — private OR embedding-off; open it manually");
+		bits.push("not shared publicly — ask for a new link");
+	if (link.state === "unsupported")
+		bits.push("ONLY YouTube or Google Drive links are accepted");
 	rs.getRange(row, auto.auto).setValue(bits.join("  ·  "));
 
 	if (
@@ -251,26 +262,88 @@ function onEditHandler(e) {
 
 /* ─────────────────── link / school / assign ────────────── */
 
-function checkYouTubeLink_(url) {
-	const out = { state: "unknown", videoId: extractVideoId_(url), detail: "" };
-	if (!url || !/youtu\.?be|youtube\.com/i.test(String(url))) {
-		out.state = "notyt";
+/**
+ * Only YouTube and Google Drive links are accepted. Anything else is reported
+ * as "unsupported" and gets flagged for a re-submission, without a network call.
+ *
+ * Returned state:
+ *   ok           the video is reachable
+ *   private      exists but not shared / not public
+ *   missing      404, removed, or a malformed id
+ *   unsupported  not a YouTube or Drive URL
+ *   empty        no link at all
+ *   unknown      network error or an unexpected response — a human should look
+ */
+function checkVideoLink_(url) {
+	const out = {
+		state: "unknown",
+		host: "",
+		videoId: extractVideoId_(url), // YouTube only (playlist sync uses this)
+		fingerprint: linkFingerprint_(url), // YouTube or Drive (duplicate detection)
+		detail: "",
+	};
+	const s = String(url || "").trim();
+	if (!s) {
+		out.state = "empty";
 		return out;
 	}
-	try {
-		const resp = UrlFetchApp.fetch(
-			"https://www.youtube.com/oembed?format=json&url=" +
-				encodeURIComponent(String(url).trim()),
-			{ muteHttpExceptions: true, followRedirects: true },
-		);
-		const code = resp.getResponseCode();
-		out.detail = "HTTP " + code;
-		if (code === 200) out.state = "ok";
-		else if (code === 401 || code === 403) out.state = "private";
-		else if (code === 404) out.state = "missing";
-	} catch (err) {
-		out.detail = err.message;
+
+	if (/youtu\.?be|youtube\.com/i.test(s)) {
+		out.host = "youtube";
+		try {
+			const resp = UrlFetchApp.fetch(
+				"https://www.youtube.com/oembed?format=json&url=" + encodeURIComponent(s),
+				{ muteHttpExceptions: true, followRedirects: true },
+			);
+			const code = resp.getResponseCode();
+			out.detail = "HTTP " + code;
+			if (code === 200) out.state = "ok";
+			else if (code === 401 || code === 403) out.state = "private";
+			else if (code === 404) out.state = "missing";
+		} catch (err) {
+			out.detail = err.message;
+		}
+		return out;
 	}
+
+	if (/drive\.google\.com|docs\.google\.com/i.test(s)) {
+		out.host = "drive";
+		const id = extractDriveId_(s);
+		if (!id) {
+			out.state = "missing";
+			out.detail = "no file id in URL";
+			return out;
+		}
+		try {
+			const resp = UrlFetchApp.fetch(
+				"https://drive.google.com/file/d/" + id + "/view",
+				{ muteHttpExceptions: true, followRedirects: false },
+			);
+			const code = resp.getResponseCode();
+			out.detail = "HTTP " + code;
+			if (code === 404) {
+				out.state = "missing";
+			} else if (code === 403) {
+				out.state = "private";
+			} else if (code === 301 || code === 302 || code === 303) {
+				const h = resp.getAllHeaders() || {};
+				const loc = String(h.Location || h.location || "");
+				out.state = /accounts\.google\.com/i.test(loc) ? "private" : "unknown";
+			} else if (code === 200) {
+				// A file that isn't shared renders an access-request interstitial.
+				const body = String(resp.getContentText()).slice(0, 30000);
+				out.state = /Request access|You need access|need permission/i.test(body)
+					? "private"
+					: "ok";
+			}
+		} catch (err) {
+			out.detail = err.message;
+		}
+		return out;
+	}
+
+	out.state = "unsupported";
+	out.detail = "not a YouTube or Google Drive link";
 	return out;
 }
 
@@ -279,6 +352,20 @@ function extractVideoId_(url) {
 		/(?:v=|\/live\/|\/shorts\/|\/embed\/|youtu\.be\/)([\w-]{11})/,
 	);
 	return m ? m[1] : "";
+}
+
+function extractDriveId_(url) {
+	const s = String(url);
+	const m =
+		s.match(/\/file\/d\/([\w-]{10,})/) ||
+		s.match(/[?&]id=([\w-]{10,})/) ||
+		s.match(/\/d\/([\w-]{10,})/);
+	return m ? m[1] : "";
+}
+
+/** Host-agnostic id used to spot the same video submitted twice. */
+function linkFingerprint_(url) {
+	return extractVideoId_(url) || extractDriveId_(url) || "";
 }
 
 function normalizeSchool_(s) {
@@ -349,8 +436,22 @@ function assignReviewer_(ss, category) {
 	const reviewers = getReviewers_(ss);
 	if (!reviewers.length) return "";
 	const mode = String(
-		getCfg_("Assignment mode (round-robin / by-category)", "round-robin"),
-	).toLowerCase();
+		getCfg_("Assignment mode (round-robin / by-category / off)", "round-robin"),
+	)
+		.trim()
+		.toLowerCase();
+
+	// "off" / "none" / "manual" / "" → leave the Reviewer cell blank so reviewers
+	// claim rows themselves.
+	if (
+		mode === "" ||
+		mode === "off" ||
+		mode === "none" ||
+		mode === "manual" ||
+		mode === "no"
+	) {
+		return "";
+	}
 
 	if (mode.indexOf("categ") !== -1) {
 		const map = getCategoryReviewerMap_(ss);
@@ -371,16 +472,155 @@ function assignReviewer_(ss, category) {
 	return reviewers[p];
 }
 
-function findDuplicateVideo_(rs, videoId, thisRow, headers) {
-	if (!videoId || thisRow < 3) return 0;
+function findDuplicateVideo_(rs, fingerprint, thisRow, headers) {
+	if (!fingerprint || thisRow < 3) return 0;
 	const vcol =
 		findCol_(headers, "submission video") || findCol_(headers, "video");
 	if (!vcol) return 0;
 	const vals = rs.getRange(2, vcol, thisRow - 2, 1).getValues();
 	for (let i = 0; i < vals.length; i++) {
-		if (extractVideoId_(vals[i][0]) === videoId) return i + 2;
+		if (linkFingerprint_(vals[i][0]) === fingerprint) return i + 2;
 	}
 	return 0;
+}
+
+/* ───────────────── broken-link email (menu) ─────────────── */
+
+const LINK_EMAIL_MARK = "link email sent";
+
+/**
+ * Menu: email the participant on the selected row asking for a working link.
+ * Shows the full message for approval before anything is sent, and records the
+ * send in Auto-check so nobody gets chased twice.
+ */
+function emailBrokenLink() {
+	const ss = SpreadsheetApp.getActiveSpreadsheet();
+	const ui = SpreadsheetApp.getUi();
+	const rs = getResponsesSheet_(ss);
+
+	if (SpreadsheetApp.getActiveSheet().getSheetName() !== rs.getSheetName()) {
+		ui.alert("Open the form-responses tab and select the participant's row first.");
+		return;
+	}
+	const row = rs.getActiveCell().getRow();
+	if (row < 2) {
+		ui.alert("Select a submission row first (not the header).");
+		return;
+	}
+
+	const headers = headerMap_(rs);
+	const rev = reviewColMap_(rs);
+	const auto = ensureAutoColumns_(rs);
+	const at = function (sub, opts) {
+		const c = findCol_(headers, sub, opts);
+		return c ? String(rs.getRange(row, c).getValue()).trim() : "";
+	};
+
+	const name = at("full name", { exclude: "school" }) || at("first and last");
+	const email = String(
+		valueAtCol_(rs, row, findEmailCol_(headers)),
+	).trim();
+	const videoUrl = at("submission video") || at("video");
+	const linkState = rev.link
+		? String(rs.getRange(row, rev.link).getValue()).trim()
+		: "";
+	const autoNote = auto.auto
+		? String(rs.getRange(row, auto.auto).getValue())
+		: "";
+
+	if (!isEmail_(email)) {
+		ui.alert("Row " + row + " has no usable email address — nothing to send to.");
+		return;
+	}
+	if (autoNote.indexOf(LINK_EMAIL_MARK) !== -1) {
+		const again = ui.alert(
+			"Already contacted",
+			"This participant was already emailed about their link.\n\n" +
+				autoNote +
+				"\n\nSend another one?",
+			ui.ButtonSet.YES_NO,
+		);
+		if (again !== ui.Button.YES) return;
+	}
+
+	const reason = brokenLinkReason_(linkState, videoUrl);
+	const subject = "Your Fall Kickoff video link needs a quick fix";
+	const body = [
+		"Hi " + (firstName_(name) || "there") + ",",
+		"",
+		"Thanks for entering the TYMN Fall Kickoff Challenge. We tried to watch your submission but couldn't open it:",
+		"",
+		"    " + (videoUrl || "(no link was submitted)"),
+		"",
+		reason,
+		"",
+		"What we need:",
+		"  • A YouTube link set to Unlisted (not Private), or",
+		'  • A Google Drive link shared as "Anyone with the link can view".',
+		"",
+		"Just reply to this email with the working link and we'll take care of the rest — you don't need to submit the form again. Please send it before the challenge closes on " +
+			closeDateText_() +
+			" so your entry counts for your school.",
+		"",
+		"Tip: open your own link in a private/incognito window first. If it plays there, it'll work for us.",
+		"",
+		"Thanks!",
+		"Texas Youth Music Network",
+	].join("\n");
+
+	const ok = ui.alert(
+		"Send this email?",
+		"To: " + email + "  (row " + row + ")\nSubject: " + subject + "\n\n" + body,
+		ui.ButtonSet.YES_NO,
+	);
+	if (ok !== ui.Button.YES) return;
+
+	try {
+		MailApp.sendEmail({
+			to: email,
+			subject: subject,
+			body: body,
+			htmlBody: plainToHtml_(body),
+			name: String(getCfg_("Confirmation email from-name", "Texas Youth Music Network")),
+		});
+	} catch (err) {
+		ui.alert("Could not send: " + err.message);
+		return;
+	}
+
+	if (auto.auto) {
+		appendAuto_(rs, row, auto.auto, LINK_EMAIL_MARK + " " + shortDate_(new Date()));
+	}
+	ss.toast("Emailed " + email + " about their link.", "TYMN Review", 6);
+}
+
+/** The one-line explanation that matches what's actually wrong with the link. */
+function brokenLinkReason_(linkState, videoUrl) {
+	const s = String(linkState).toLowerCase();
+	if (s.indexOf("private") !== -1) {
+		return (
+			"It looks like the video is set to Private, so only you can see it. " +
+			"Unlisted videos are hidden from search but play for anyone with the link — that's what we need."
+		);
+	}
+	if (s.indexOf("dead") !== -1 || s.indexOf("wrong") !== -1) {
+		if (videoUrl && !/youtu\.?be|youtube\.com|drive\.google\.com|docs\.google\.com/i.test(videoUrl)) {
+			return (
+				"That link isn't a YouTube or Google Drive video, and those are the only two we can accept for judging."
+			);
+		}
+		return (
+			"The link didn't load — it may have a typo, or the video may have been deleted or moved since you submitted."
+		);
+	}
+	return "The link didn't open for us, so we weren't able to review your performance.";
+}
+
+function closeDateText_() {
+	const raw = getCfg_("Challenge close date", "2026-09-30");
+	const d = raw instanceof Date ? raw : new Date(String(raw));
+	if (isNaN(d.getTime())) return String(raw);
+	return Utilities.formatDate(d, Session.getScriptTimeZone(), "MMMM d");
 }
 
 /* ─────────────────── row validation top-up ─────────────── */
@@ -452,6 +692,7 @@ function sendConfirmation_(to, d) {
 		to: to,
 		subject: "We got your Fall Kickoff submission",
 		body: body,
+		htmlBody: plainToHtml_(body),
 		name: String(
 			getCfg_(
 				"Confirmation email from-name",
@@ -459,6 +700,65 @@ function sendConfirmation_(to, d) {
 			),
 		),
 	});
+}
+
+/**
+ * Wrap a plain-text body in simple HTML so mail clients reflow it to the
+ * reader's window. Gmail renders a text/plain part in a fixed ~78-character
+ * column, which is what makes an otherwise fine email look like it's cut off
+ * halfway across the screen.
+ *
+ * Escapes HTML, linkifies URLs, turns "  • " lines into a real list, and keeps
+ * paragraph breaks.
+ */
+function plainToHtml_(plain) {
+	const esc = function (s) {
+		return String(s)
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;");
+	};
+	const link = function (s) {
+		return s.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1">$1</a>');
+	};
+
+	const out = [];
+	let inList = false;
+	String(plain)
+		.split("\n")
+		.forEach(function (raw) {
+			const bullet = raw.match(/^\s*•\s?(.*)$/);
+			if (bullet) {
+				if (!inList) {
+					out.push('<ul style="margin:.4em 0 .8em; padding-left:1.3em;">');
+					inList = true;
+				}
+				out.push("<li>" + link(esc(bullet[1])) + "</li>");
+				return;
+			}
+			if (inList) {
+				out.push("</ul>");
+				inList = false;
+			}
+			if (raw.trim() === "") return; // blank line = paragraph break
+			// Indented continuation lines (e.g. a bare URL under a bullet).
+			const indented = /^\s{2,}\S/.test(raw);
+			out.push(
+				'<p style="margin:0 0 .8em;' +
+					(indented ? "padding-left:1.3em;" : "") +
+					'">' +
+					link(esc(raw.trim())) +
+					"</p>",
+			);
+		});
+	if (inList) out.push("</ul>");
+
+	return (
+		'<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;' +
+		'line-height:1.55;color:#1a1a1a;max-width:600px;">' +
+		out.join("\n") +
+		"</div>"
+	);
 }
 
 /* ───────────────────── YouTube playlist ────────────────── */

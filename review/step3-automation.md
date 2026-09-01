@@ -63,7 +63,7 @@ set "Send confirmation email" to `no` and rely on a digest instead.
 
 | Setting | Default |
 |---|---|
-| Assignment mode | `round-robin` |
+| Assignment mode | `round-robin` — also accepts `by-category`, or `off` to leave Reviewer blank so people claim rows themselves |
 | Send confirmation email | `yes` |
 | Confirmation email from-name | `Texas Youth Music Network` |
 | Sync valid videos to a YouTube playlist | `no` |

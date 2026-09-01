@@ -82,6 +82,10 @@ function onOpen() {
 			"Add selected row’s school to Schools tab",
 			"addSchoolFromSelectedRow",
 		)
+		.addItem(
+			"Email selected participant about a broken link",
+			"emailBrokenLink",
+		)
 		.addItem("Hide irrelevant response columns", "hideIrrelevantColumns")
 		.addItem("Show all response columns", "showAllResponseColumns")
 		.addSeparator()
@@ -90,7 +94,6 @@ function onOpen() {
 			"Publish leaderboard now (usually auto-publishes at 6am daily)",
 			"publishLeaderboard",
 		)
-		.addItem("Check GitHub access", "diagnoseGitHubAccess")
 		.addSeparator()
 		.addItem(
 			"(DON'T TOUCH) Set up / repair review sheet",
@@ -211,31 +214,52 @@ function findCol_(headers, sub, opts) {
 
 /* ─────────────────────── review columns ───────────────────── */
 
+/**
+ * Locate the review columns BY HEADER NAME, so they can be reordered or moved
+ * apart without breaking validation, formatting, or the leaderboard. Only
+ * columns that don't exist yet are appended on the right.
+ *
+ * The one layout rule: keep every review column to the RIGHT of the form's own
+ * columns. Everything left of the first review column is treated as form data
+ * and gets edit protection.
+ */
 function ensureReviewColumns_(rs) {
 	const headers = headerMap_(rs);
-	let firstReviewCol = headers.indexOf(REVIEW_COLUMNS[0].header) + 1;
-
-	if (!firstReviewCol) {
-		firstReviewCol = rs.getLastColumn() + 1;
-		const row = REVIEW_COLUMNS.map(function (c) {
-			return c.header;
-		});
-		rs.getRange(1, firstReviewCol, 1, row.length).setValues([row]);
-	}
-
 	const map = {};
-	REVIEW_COLUMNS.forEach(function (c, i) {
-		map[c.key] = firstReviewCol + i;
+	const missing = [];
+
+	REVIEW_COLUMNS.forEach(function (c) {
+		const i = headers.indexOf(c.header);
+		if (i === -1) missing.push(c);
+		else map[c.key] = i + 1;
 	});
 
-	// header styling
-	const hdr = rs.getRange(1, firstReviewCol, 1, REVIEW_COLUMNS.length);
-	hdr.setBackground("#1f3864")
-		.setFontColor("#ffffff")
-		.setFontWeight("bold")
-		.setWrap(true)
-		.setHorizontalAlignment("center");
-	rs.getRange(1, firstReviewCol, rs.getMaxRows(), 1).setBorder(
+	if (missing.length) {
+		let next = rs.getLastColumn() + 1;
+		missing.forEach(function (c) {
+			rs.getRange(1, next).setValue(c.header);
+			map[c.key] = next;
+			next++;
+		});
+	}
+
+	// header styling, per column (they may not be adjacent)
+	const cols = REVIEW_COLUMNS.map(function (c) {
+		return map[c.key];
+	});
+	cols.forEach(function (col) {
+		rs.getRange(1, col)
+			.setBackground("#1f3864")
+			.setFontColor("#ffffff")
+			.setFontWeight("bold")
+			.setWrap(true)
+			.setHorizontalAlignment("center");
+	});
+
+	const first = Math.min.apply(null, cols);
+	const last = Math.max.apply(null, cols);
+
+	rs.getRange(1, first, rs.getMaxRows(), 1).setBorder(
 		null,
 		true,
 		null,
@@ -247,8 +271,8 @@ function ensureReviewColumns_(rs) {
 	);
 	rs.setColumnWidth(map.notes, 320);
 
-	map._first = firstReviewCol;
-	map._last = firstReviewCol + REVIEW_COLUMNS.length - 1;
+	map._first = first;
+	map._last = last;
 	map._headers = headerMap_(rs);
 	return map;
 }

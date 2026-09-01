@@ -36,6 +36,17 @@ drifts: **TYMN Review → Refresh formatting & validation**.
 | `Standout confirmed?` | Yes / No | pass-2, by a *different* reviewer |
 | `Notes` | free text | one line |
 
+### Reordering columns
+
+The review columns are located **by header name**, so you can drag them into any
+order you like and everything — dropdowns, row colors, the Dashboard, the
+leaderboard — keeps working. Renaming a header is what breaks things: the script
+would treat that column as missing and add a fresh one on the right.
+
+One layout rule: keep all review columns **to the right of the form's own
+columns**. Everything left of the leftmost review column is treated as form data
+and gets edit protection.
+
 ### Formatting
 
 - Row tints: **green** = `Valid? = Yes` · **red** = link starts with "No" · **amber** = "Needs 2nd look" · **salmon** = valid but no canonical school picked.
